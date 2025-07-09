@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60" viewBox="0 0 200 60">
+  <style>
+    .logo-text { font-family: Arial, sans-serif; font-weight: bold; }
+    .primary { fill: #4e73df; }
+    .secondary { fill: #5a5c69; }
+  </style>
+  <rect x="10" y="15" width="30" height="30" rx="5" class="primary" />
+  <text x="50" y="38" class="logo-text primary" font-size="24">Poly</text>
+  <text x="100" y="38" class="logo-text secondary" font-size="24">Shop</text>
+</svg>

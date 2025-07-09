@@ -13,7 +13,7 @@ class CategoryModel extends BaseModel
     public function getAll()
     {
         $sql = "SELECT * FROM {$this->table}";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->execute();
         
         return $stmt->fetchAll();
@@ -23,7 +23,7 @@ class CategoryModel extends BaseModel
     public function getById($id)
     {
         $sql = "SELECT * FROM {$this->table} WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         
@@ -34,7 +34,7 @@ class CategoryModel extends BaseModel
     public function create($data)
     {
         $sql = "INSERT INTO {$this->table} (name, description) VALUES (:name, :description)";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
         $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
         
@@ -45,7 +45,7 @@ class CategoryModel extends BaseModel
     public function update($id, $data)
     {
         $sql = "UPDATE {$this->table} SET name = :name, description = :description WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
         $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -57,9 +57,19 @@ class CategoryModel extends BaseModel
     public function delete($id)
     {
         $sql = "DELETE FROM {$this->table} WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         
         return $stmt->execute();
+    }
+    
+    // Đếm tổng số danh mục
+    public function countAll()
+    {
+        $sql = "SELECT COUNT(*) FROM {$this->table}";
+        $stmt = $this->getPdo()->prepare($sql);
+        $stmt->execute();
+        
+        return $stmt->fetchColumn();
     }
 }

@@ -1,3 +1,14 @@
+<?php
+// Hàm lấy màu cho biểu đồ
+function getChartColor($index) {
+    $colors = [
+        '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
+        '#5a5c69', '#6f42c1', '#fd7e14', '#20c997', '#6c757d'
+    ];
+    return $colors[$index % count($colors)];
+}
+?>
+
 <div class="container-fluid py-4">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -208,7 +219,7 @@
                                     <td><?= substr($comment['content'], 0, 30) . (strlen($comment['content']) > 30 ? '...' : '') ?></td>
                                     <td><?= date('d/m/Y', strtotime($comment['created_at'])) ?></td>
                                     <td>
-                                        <?php if ($comment['status'] == 'approved'): ?>
+                                        <?php if ($comment['approved'] == 1): ?>
                                             <span class="badge bg-success">Đã duyệt</span>
                                         <?php else: ?>
                                             <span class="badge bg-warning">Chờ duyệt</span>

@@ -10,11 +10,14 @@ class AdminController
     public function __construct()
     {
         // Kiểm tra quyền admin
-        if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
+        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
             $_SESSION['error'] = 'Bạn không có quyền truy cập trang quản trị';
             header('Location: ' . BASE_URL);
             exit;
         }
+        
+        // Thiết lập biến is_admin cho các controller khác sử dụng
+        $_SESSION['is_admin'] = true;
         
         $this->userModel = new UserModel();
         $this->categoryModel = new CategoryModel();
@@ -31,9 +34,13 @@ class AdminController
         $totalCategories = $this->categoryModel->countAll();
         $totalUsers = $this->userModel->countAll();
         $pendingComments = $this->commentModel->countPending();
+        $totalComments = $this->commentModel->countAll();
         
         $latestProducts = $this->productModel->getLatest(5);
+        $latestComments = $this->commentModel->getLatest(5);
         $recentActivities = $this->getRecentActivities();
+        $userRegistrationStats = $this->userModel->getRegistrationStats();
+        $productsByCategory = $this->productModel->countByCategory();
         
         $title = 'Trang quản trị - PolyShop';
         $view = 'admin/dashboard';

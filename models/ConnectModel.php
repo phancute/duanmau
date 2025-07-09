@@ -85,5 +85,5 @@ class ConnectModel
     private function __clone() {}
 
     // Ngăn chặn việc unserialize đối tượng
-    private function __wakeup() {}
+    public function __wakeup() {}
 }

@@ -9,14 +9,12 @@
                     <?php if (isset($_SESSION['error'])): ?>
                         <div class="alert alert-danger">
                             <?= $_SESSION['error']; ?>
-                            <?php unset($_SESSION['error']); ?>
                         </div>
                     <?php endif; ?>
                     
                     <?php if (isset($_SESSION['success'])): ?>
                         <div class="alert alert-success">
                             <?= $_SESSION['success']; ?>
-                            <?php unset($_SESSION['success']); ?>
                         </div>
                     <?php endif; ?>
                     
@@ -63,10 +61,28 @@
                 if (!form.checkValidity()) {
                     event.preventDefault();
                     event.stopPropagation();
+                } else {
+                    // Log khi form hợp lệ và sẽ được gửi
+                    console.log('Form đăng nhập hợp lệ, đang gửi dữ liệu...');
                 }
                 
                 form.classList.add('was-validated');
             }, false);
         });
     })();
+    
+    // Kiểm tra thông báo thành công/lỗi
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hiển thị thông báo nếu có
+        var successAlert = document.querySelector('.alert-success');
+        var errorAlert = document.querySelector('.alert-danger');
+        
+        if (successAlert) {
+            console.log('Thông báo thành công: ' + successAlert.textContent.trim());
+        }
+        
+        if (errorAlert) {
+            console.log('Thông báo lỗi: ' + errorAlert.textContent.trim());
+        }
+    });
 </script>

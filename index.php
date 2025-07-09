@@ -1,51 +1,30 @@
-<?php 
-
-// Bắt đầu session
+<?php
+// Khởi tạo session
 session_start();
 
-// Thiết lập các header bảo mật
-header('X-Content-Type-Options: nosniff');
-header('X-Frame-Options: SAMEORIGIN');
-header('X-XSS-Protection: 1; mode=block');
+// Tải cấu hình môi trường
+require_once 'configs/env.php';
 
-// Tải các file cấu hình
-require_once './configs/env.php';
-require_once './configs/helper.php';
+// Tải các hàm helper
+require_once 'configs/helper.php';
 
-// Đăng ký autoloader
-spl_autoload_register(function ($class) {    
-    $fileName = "$class.php";
+// Tải các model
+require_once PATH_MODEL . 'BaseModel.php';
+require_once PATH_MODEL . 'ConnectModel.php';
+require_once PATH_MODEL . 'UserModel.php';
+require_once PATH_MODEL . 'CategoryModel.php';
+require_once PATH_MODEL . 'ProductModel.php';
+require_once PATH_MODEL . 'CommentModel.php';
 
-    $fileModel      = PATH_MODEL . $fileName;
-    $fileController = PATH_CONTROLLER . $fileName;
-
-    if (is_readable($fileModel)) {
-        require_once $fileModel;
-    } 
-    else if (is_readable($fileController)) {
-        require_once $fileController;
-    }
-});
-
-// Xử lý flash messages
-if (!isset($_SESSION['_flash'])) {
-    $_SESSION['_flash'] = [];
-}
+// Tải các controller
+require_once PATH_CONTROLLER . 'HomeController.php';
+require_once PATH_CONTROLLER . 'CategoryController.php';
+require_once PATH_CONTROLLER . 'ProductController.php';
+require_once PATH_CONTROLLER . 'UserController.php';
+require_once PATH_CONTROLLER . 'AdminController.php';
 
 // Lấy action từ URL
-$action = $_GET['action'] ?? '/';
+$action = isset($_GET['action']) ? $_GET['action'] : '/';
 
-// Xử lý CSRF protection cho các request POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        // Nếu không có token hoặc token không khớp, chuyển hướng về trang chủ
-        redirect('');
-        exit;
-    }
-}
-
-// Tạo CSRF token mới cho mỗi request
-$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-
-// Điều hướng
-require_once './routes/index.php';
+// Tải router
+require_once 'routes/index.php';

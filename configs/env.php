@@ -13,7 +13,7 @@ if (ENVIRONMENT === 'development') {
 }
 
 // URL cơ sở
-define('BASE_URL', 'http://localhost/BaseExam/');
+define('BASE_URL', 'http://localhost:8000/');
 
 // Đường dẫn thư mục
 define('PATH_ROOT',         __DIR__ . '/../');

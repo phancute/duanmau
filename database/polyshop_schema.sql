@@ -7,6 +7,7 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE NOT NULL, 
     password VARCHAR(255) NOT NULL, 
     role ENUM('user', 'admin') DEFAULT 'user', 
+    active TINYINT(1) DEFAULT 1, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
 ); 
 
@@ -61,4 +62,14 @@ CREATE TABLE inventory_logs (
     quantity INT, 
     log_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     FOREIGN KEY (product_id) REFERENCES products(id) 
+);
+
+-- 7. Bảng lưu token ghi nhớ đăng nhập
+CREATE TABLE remember_tokens (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

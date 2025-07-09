@@ -15,7 +15,7 @@ class ProductModel extends BaseModel
         $sql = "SELECT p.*, c.name as category_name 
                 FROM {$this->table} p 
                 LEFT JOIN categories c ON p.category_id = c.id";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->execute();
         
         return $stmt->fetchAll();
@@ -28,7 +28,7 @@ class ProductModel extends BaseModel
                 FROM {$this->table} p 
                 LEFT JOIN categories c ON p.category_id = c.id 
                 WHERE p.id = :id";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         
@@ -42,7 +42,7 @@ class ProductModel extends BaseModel
                 FROM {$this->table} p 
                 LEFT JOIN categories c ON p.category_id = c.id 
                 WHERE p.category_id = :category_id";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
         $stmt->execute();
         
@@ -57,7 +57,7 @@ class ProductModel extends BaseModel
                 VALUES 
                 (:name, :description, :specifications, :price, :image_url, :category_id, :stock)";
         
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
         $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
         $stmt->bindParam(':specifications', $data['specifications'], PDO::PARAM_STR);
@@ -82,7 +82,7 @@ class ProductModel extends BaseModel
                 stock = :stock 
                 WHERE id = :id";
         
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
         $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
         $stmt->bindParam(':specifications', $data['specifications'], PDO::PARAM_STR);
@@ -99,7 +99,7 @@ class ProductModel extends BaseModel
     public function updateStock($id, $quantity)
     {
         $sql = "UPDATE {$this->table} SET stock = :stock WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':stock', $quantity, PDO::PARAM_INT);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         
@@ -110,7 +110,7 @@ class ProductModel extends BaseModel
     public function delete($id)
     {
         $sql = "DELETE FROM {$this->table} WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         
         return $stmt->execute();
@@ -125,8 +125,47 @@ class ProductModel extends BaseModel
                 LEFT JOIN categories c ON p.category_id = c.id 
                 WHERE p.name LIKE :keyword OR p.description LIKE :keyword";
         
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':keyword', $keyword, PDO::PARAM_STR);
+        $stmt->execute();
+        
+        return $stmt->fetchAll();
+    }
+    
+    // Đếm tổng số sản phẩm
+    public function countAll()
+    {
+        $sql = "SELECT COUNT(*) FROM {$this->table}";
+        $stmt = $this->getPdo()->prepare($sql);
+        $stmt->execute();
+        
+        return $stmt->fetchColumn();
+    }
+    
+    // Lấy sản phẩm mới nhất
+    public function getLatest($limit = 5)
+    {
+        $sql = "SELECT p.*, c.name as category_name 
+                FROM {$this->table} p 
+                LEFT JOIN categories c ON p.category_id = c.id 
+                ORDER BY p.id DESC 
+                LIMIT :limit";
+        $stmt = $this->getPdo()->prepare($sql);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll();
+    }
+    
+    // Đếm số lượng sản phẩm theo danh mục
+    public function countByCategory()
+    {
+        $sql = "SELECT c.id, c.name, COUNT(p.id) as count 
+                FROM categories c 
+                LEFT JOIN {$this->table} p ON c.id = p.category_id 
+                GROUP BY c.id, c.name 
+                ORDER BY c.name ASC";
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->execute();
         
         return $stmt->fetchAll();

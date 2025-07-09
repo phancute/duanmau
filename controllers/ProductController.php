@@ -156,7 +156,7 @@ class ProductController
     public function add()
     {
         // Kiểm tra quyền admin
-        if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
+        if (!is_admin()) {
             $_SESSION['error'] = 'Bạn không có quyền thực hiện chức năng này';
             header('Location: ' . BASE_URL . 'product');
             exit;
@@ -255,7 +255,7 @@ class ProductController
     public function edit($id)
     {
         // Kiểm tra quyền admin
-        if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
+        if (!is_admin()) {
             $_SESSION['error'] = 'Bạn không có quyền thực hiện chức năng này';
             header('Location: ' . BASE_URL . 'product');
             exit;
@@ -349,7 +349,7 @@ class ProductController
     public function delete($id)
     {
         // Kiểm tra quyền admin
-        if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
+        if (!is_admin()) {
             $_SESSION['error'] = 'Bạn không có quyền thực hiện chức năng này';
             header('Location: ' . BASE_URL . 'product');
             exit;

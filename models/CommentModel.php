@@ -17,7 +17,7 @@ class CommentModel extends BaseModel
                 LEFT JOIN users u ON c.user_id = u.id 
                 LEFT JOIN products p ON c.product_id = p.id 
                 ORDER BY c.created_at DESC";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->execute();
         
         return $stmt->fetchAll();
@@ -31,7 +31,7 @@ class CommentModel extends BaseModel
                 LEFT JOIN users u ON c.user_id = u.id 
                 LEFT JOIN products p ON c.product_id = p.id 
                 WHERE c.id = :id";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         
@@ -52,7 +52,7 @@ class CommentModel extends BaseModel
         
         $sql .= " ORDER BY c.created_at DESC";
         
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':product_id', $productId, PDO::PARAM_INT);
         $stmt->execute();
         
@@ -67,7 +67,7 @@ class CommentModel extends BaseModel
                 LEFT JOIN products p ON c.product_id = p.id 
                 WHERE c.user_id = :user_id 
                 ORDER BY c.created_at DESC";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         
@@ -79,7 +79,7 @@ class CommentModel extends BaseModel
     {
         $sql = "INSERT INTO {$this->table} (user_id, product_id, content, approved) 
                 VALUES (:user_id, :product_id, :content, :approved)";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':user_id', $data['user_id'], PDO::PARAM_INT);
         $stmt->bindParam(':product_id', $data['product_id'], PDO::PARAM_INT);
         $stmt->bindParam(':content', $data['content'], PDO::PARAM_STR);
@@ -92,7 +92,7 @@ class CommentModel extends BaseModel
     public function approve($id, $approved = true)
     {
         $sql = "UPDATE {$this->table} SET approved = :approved WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':approved', $approved, PDO::PARAM_BOOL);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         
@@ -103,7 +103,7 @@ class CommentModel extends BaseModel
     public function update($id, $content)
     {
         $sql = "UPDATE {$this->table} SET content = :content WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':content', $content, PDO::PARAM_STR);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         
@@ -114,19 +114,45 @@ class CommentModel extends BaseModel
     public function delete($id)
     {
         $sql = "DELETE FROM {$this->table} WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         
         return $stmt->execute();
     }
 
     // Đếm số lượng bình luận chưa được phê duyệt
-    public function countPendingComments()
+    public function countPending()
     {
         $sql = "SELECT COUNT(*) FROM {$this->table} WHERE approved = 0";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->getPdo()->prepare($sql);
         $stmt->execute();
         
         return $stmt->fetchColumn();
+    }
+    
+    // Đếm tổng số bình luận
+    public function countAll()
+    {
+        $sql = "SELECT COUNT(*) FROM {$this->table}";
+        $stmt = $this->getPdo()->prepare($sql);
+        $stmt->execute();
+        
+        return $stmt->fetchColumn();
+    }
+    
+    // Lấy bình luận mới nhất
+    public function getLatest($limit = 5)
+    {
+        $sql = "SELECT c.*, u.username, p.name as product_name 
+                FROM {$this->table} c 
+                LEFT JOIN users u ON c.user_id = u.id 
+                LEFT JOIN products p ON c.product_id = p.id 
+                ORDER BY c.id DESC 
+                LIMIT :limit";
+        $stmt = $this->getPdo()->prepare($sql);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll();
     }
 }

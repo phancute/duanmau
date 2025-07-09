@@ -57,25 +57,113 @@ class UserController
             }
             
             if (empty($errors)) {
-                // Mã hóa mật khẩu
-                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                
                 $data = [
                     'username' => $username,
                     'email' => $email,
-                    'password' => $hashedPassword,
-                    'role' => 'user',
-                    'active' => 1
+                    'password' => $password,
+                    'role' => 'user'
                 ];
                 
-                $result = $this->userModel->create($data);
+                // Thêm log để debug
+                error_log("Bắt đầu đăng ký người dùng: " . $username);
                 
-                if ($result) {
-                    $_SESSION['success'] = 'Đăng ký tài khoản thành công. Vui lòng đăng nhập.';
-                    header('Location: ' . BASE_URL . 'login');
-                    exit;
-                } else {
-                    $_SESSION['error'] = 'Có lỗi xảy ra khi đăng ký tài khoản';
+                try {
+                    // Thêm log để debug
+                    error_log("Bắt đầu quá trình đăng ký cho: " . $username);
+                    
+                    // Kiểm tra kết nối cơ sở dữ liệu
+                    if (!$this->userModel->getPdo()) {
+                        throw new Exception("Không thể kết nối đến cơ sở dữ liệu");
+                    }
+                    
+                    // Kiểm tra cơ sở dữ liệu có tồn tại không
+                    try {
+                        $checkDb = $this->userModel->getPdo()->query("SELECT DATABASE()");
+                        $dbName = $checkDb->fetchColumn();
+                        error_log("Đang sử dụng cơ sở dữ liệu: " . $dbName);
+                        
+                        if (empty($dbName)) {
+                            throw new Exception("Không có cơ sở dữ liệu được chọn");
+                        }
+                    } catch (PDOException $e) {
+                        throw new Exception("Lỗi kiểm tra cơ sở dữ liệu: " . $e->getMessage());
+                    }
+                    
+                    // Kiểm tra bảng users có tồn tại không
+                    try {
+                        $checkTable = $this->userModel->getPdo()->query("SHOW TABLES LIKE 'users'");
+                        if ($checkTable->rowCount() == 0) {
+                            throw new Exception("Bảng users không tồn tại. Vui lòng chạy script cài đặt cơ sở dữ liệu.");
+                        }
+                    } catch (PDOException $e) {
+                        throw new Exception("Lỗi kiểm tra bảng: " . $e->getMessage());
+                    }
+                    
+                    // Thực hiện đăng ký
+                    error_log("Bắt đầu thực hiện đăng ký với dữ liệu: " . json_encode($data));
+                    
+                    // Thêm script để hiển thị thông báo trong console trước khi đăng ký
+                    echo '<script>console.log("Đang xử lý đăng ký cho: ' . $username . '");</script>';
+                    
+                    $userId = $this->userModel->register($data);
+                    
+                    if ($userId) {
+                        // Thêm log thành công
+                        error_log("Đăng ký thành công cho: " . $username . ", ID: " . $userId);
+                        
+                        // Hiển thị thông báo thành công
+                        $_SESSION['success'] = 'Đăng ký tài khoản thành công. Vui lòng đăng nhập.';
+                        
+                        // Thêm script để hiển thị thông báo trong console
+                        echo '<script>console.log("Đăng ký thành công: ' . $username . ' (ID: ' . $userId . ')");</script>';
+                        
+                        // Chuyển hướng đến trang đăng nhập
+                        redirect('login');
+                        exit;
+                    } else {
+                        // Thêm log lỗi
+                        error_log("Đăng ký thất bại cho: " . $username);
+                        $_SESSION['error'] = 'Có lỗi xảy ra khi đăng ký tài khoản. Vui lòng kiểm tra log lỗi hoặc chạy script kiểm tra cơ sở dữ liệu.';
+                        
+                        // Thêm script để hiển thị thông báo lỗi trong console
+                        echo '<script>console.log("Đăng ký thất bại cho: ' . $username . '");</script>';
+                    }
+                } catch (Exception $e) {
+                    error_log("Lỗi đăng ký: " . $e->getMessage());
+                    $_SESSION['error'] = 'Có lỗi xảy ra: ' . $e->getMessage();
+                    
+                    // Thêm script để hiển thị thông báo lỗi trong console
+                    echo '<script>console.log("Lỗi đăng ký: ' . addslashes($e->getMessage()) . '");</script>';
+                    
+                    // Kiểm tra kết nối cơ sở dữ liệu
+                    try {
+                        $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=utf8', DB_HOST, DB_PORT, DB_NAME);
+                        $testPdo = new PDO($dsn, DB_USERNAME, DB_PASSWORD, DB_OPTIONS);
+                        echo '<script>console.log("Kết nối cơ sở dữ liệu thành công với: ' . addslashes($dsn) . '");</script>';
+                        
+                        // Kiểm tra cơ sở dữ liệu
+                        $checkDb = $testPdo->query("SELECT DATABASE()");
+                        $dbName = $checkDb->fetchColumn();
+                        echo '<script>console.log("Cơ sở dữ liệu hiện tại: ' . $dbName . '");</script>';
+                        
+                        // Kiểm tra bảng users
+                        $checkTable = $testPdo->query("SHOW TABLES LIKE 'users'");
+                        if ($checkTable->rowCount() > 0) {
+                            echo '<script>console.log("Bảng users tồn tại");</script>';
+                            
+                            // Kiểm tra cấu trúc bảng
+                            $tableInfo = $testPdo->query("DESCRIBE users");
+                            $columns = [];
+                            while ($column = $tableInfo->fetch(PDO::FETCH_ASSOC)) {
+                                $columns[] = $column['Field'] . ' (' . $column['Type'] . ')';
+                            }
+                            echo '<script>console.log("Cấu trúc bảng users: ' . addslashes(implode(", ", $columns)) . '");</script>';
+                        } else {
+                            echo '<script>console.log("Bảng users không tồn tại");</script>';
+                        }
+                    } catch (PDOException $pdoEx) {
+                        echo '<script>console.log("Lỗi kết nối cơ sở dữ liệu: ' . addslashes($pdoEx->getMessage()) . '");</script>';
+                    }
                 }
             } else {
                 $_SESSION['error'] = implode('<br>', $errors);
@@ -120,14 +208,20 @@ class UserController
                 $user = $this->userModel->getByUsername($username);
                 
                 if ($user && password_verify($password, $user['password'])) {
-                    // Kiểm tra tài khoản có bị khóa không
-                    if (!$user['active']) {
+                    // Kiểm tra tài khoản có bị khóa không (nếu trường active tồn tại)
+                    if (isset($user['active']) && !$user['active']) {
                         $_SESSION['error'] = 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.';
                     } else {
                         // Đăng nhập thành công
                         $_SESSION['user_id'] = $user['id'];
                         $_SESSION['username'] = $user['username'];
-                        $_SESSION['is_admin'] = ($user['role'] === 'admin');
+                        $_SESSION['user_role'] = $user['role'];
+                        
+                        // Thêm thông báo thành công
+                        $_SESSION['success'] = 'Đăng nhập thành công. Chào mừng ' . $user['username'] . ' quay trở lại!';
+                        
+                        // Thêm script để hiển thị thông báo trong console
+                        echo '<script>console.log("Đăng nhập thành công: ' . $user['username'] . '");</script>';
                         
                         // Lưu cookie nếu chọn "Ghi nhớ đăng nhập"
                         if ($remember) {
@@ -139,9 +233,15 @@ class UserController
                             setcookie('remember_token', $token, $expiry, '/', '', false, true);
                         }
                         
-                        // Chuyển hướng đến trang chủ hoặc trang trước đó
-                        $redirect = $_SESSION['redirect'] ?? BASE_URL;
-                        unset($_SESSION['redirect']);
+                        // Kiểm tra vai trò và chuyển hướng phù hợp
+                        if ($_SESSION['user_role'] === 'admin') {
+                            // Nếu là admin, chuyển hướng đến trang quản trị
+                            $redirect = BASE_URL . 'admin';
+                        } else {
+                            // Nếu là người dùng thường, chuyển hướng đến trang chủ hoặc trang trước đó
+                            $redirect = $_SESSION['redirect'] ?? BASE_URL;
+                            unset($_SESSION['redirect']);
+                        }
                         
                         header('Location: ' . $redirect);
                         exit;

@@ -250,7 +250,7 @@
                     <?php if (is_logged_in()): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle me-1"></i><?= session_get('user_name') ?>
+                                <i class="bi bi-person-circle me-1"></i><?= session_get('username') ?>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="<?= BASE_URL ?>profile"><i class="bi bi-person me-2"></i>Hồ sơ</a></li>
@@ -320,14 +320,57 @@
     <script>
         // Hiển thị thông báo toast
         document.addEventListener('DOMContentLoaded', function() {
-            var toastElList = [].slice.call(document.querySelectorAll('.toast'))
-            var toastList = toastElList.map(function(toastEl) {
-                return new bootstrap.Toast(toastEl, {
-                    autohide: true,
-                    delay: 5000
-                }).show();
+            // Hiển thị thông báo thành công hoặc lỗi dưới dạng toast
+            <?php if (isset($_SESSION['success'])): ?>
+                console.log('Thành công: <?= addslashes($_SESSION['success']) ?>');
+                showToast('<?= addslashes($_SESSION['success']) ?>', 'success');
+                <?php unset($_SESSION['success']); ?>
+            <?php endif; ?>
+            
+            <?php if (isset($_SESSION['error'])): ?>
+                console.log('Lỗi: <?= addslashes($_SESSION['error']) ?>');
+                showToast('<?= addslashes($_SESSION['error']) ?>', 'danger');
+                <?php unset($_SESSION['error']); ?>
+            <?php endif; ?>
+            
+            // Kích hoạt form validation của Bootstrap
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
             });
         });
+        
+        // Hàm hiển thị toast
+        function showToast(message, type) {
+            var toastHTML = `
+                <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header bg-${type} text-white">
+                            <strong class="me-auto">Thông báo</strong>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', toastHTML);
+            
+            // Sử dụng Bootstrap 5 Toast API
+            var toastEl = document.querySelector('.toast:last-child');
+            var toast = new bootstrap.Toast(toastEl, {
+                autohide: true,
+                delay: 5000
+            });
+            toast.show();
+        }
         
         // Xác nhận xóa
         function confirmDelete(message, url) {
