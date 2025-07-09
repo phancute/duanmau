@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /BaseExam/
+    
+    # Nếu không phải là file hoặc thư mục thực tế
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Chuyển hướng tất cả các request đến index.php với tham số action
+    RewriteRule ^(.*)$ index.php?action=/$1 [QSA,L]
+</IfModule>
