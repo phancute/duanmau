@@ -142,12 +142,31 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        $('#dataTable').DataTable({
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.10.25/i18n/Vietnamese.json'
-            },
-            order: [[0, 'desc']]
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof $ !== 'undefined') {
+            // Đảm bảo biến vietnameseLanguage đã được định nghĩa trước khi sử dụng
+            var checkDataTablesLanguage = setInterval(function() {
+                if (typeof vietnameseLanguage !== 'undefined') {
+                    clearInterval(checkDataTablesLanguage);
+                    $('#dataTable').DataTable({
+                        language: vietnameseLanguage,
+                        order: [[0, 'desc']]
+                    });
+                }
+            }, 100);
+            
+            // Đặt thời gian chờ tối đa để tránh vòng lặp vô hạn
+            setTimeout(function() {
+                clearInterval(checkDataTablesLanguage);
+                if (typeof vietnameseLanguage === 'undefined') {
+                    console.error('Vietnamese language file not loaded. Using default language.');
+                    $('#dataTable').DataTable({
+                        order: [[0, 'desc']]
+                    });
+                }
+            }, 3000);
+        } else {
+            console.error('jQuery is not loaded. DataTable initialization failed.');
+        }
     });
 </script>

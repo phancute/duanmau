@@ -149,49 +149,45 @@
         .card .card-header {
             background-color: #f8f9fc;
             border-bottom: 1px solid #e3e6f0;
-        }
-        
-        .card-header h6 {
             font-weight: 700;
+        }
+        
+        .card-header-tabs {
+            margin-right: 0;
+            margin-bottom: -1px;
+            margin-left: 0;
+        }
+        
+        .card-header-tabs .nav-item.show .nav-link, 
+        .card-header-tabs .nav-link.active {
+            background-color: #fff;
+            border-bottom-color: #fff;
+        }
+        
+        /* Buttons */
+        .btn-circle {
+            border-radius: 100%;
+            height: 2.5rem;
+            width: 2.5rem;
             font-size: 1rem;
-            color: var(--primary-color);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        /* Border Left Utilities */
-        .border-left-primary {
-            border-left: 0.25rem solid var(--primary-color) !important;
+        .btn-circle.btn-sm {
+            height: 1.8rem;
+            width: 1.8rem;
+            font-size: 0.75rem;
         }
         
-        .border-left-success {
-            border-left: 0.25rem solid var(--success-color) !important;
+        .btn-circle.btn-lg {
+            height: 3.5rem;
+            width: 3.5rem;
+            font-size: 1.35rem;
         }
         
-        .border-left-info {
-            border-left: 0.25rem solid var(--info-color) !important;
-        }
-        
-        .border-left-warning {
-            border-left: 0.25rem solid var(--warning-color) !important;
-        }
-        
-        .border-left-danger {
-            border-left: 0.25rem solid var(--danger-color) !important;
-        }
-        
-        /* Charts */
-        .chart-area {
-            position: relative;
-            height: 300px;
-            width: 100%;
-        }
-        
-        .chart-pie {
-            position: relative;
-            height: 250px;
-            width: 100%;
-        }
-        
-        /* Toggle Sidebar */
+        /* Sidebar Toggle */
         #sidebarToggle {
             width: 2.5rem;
             height: 2.5rem;
@@ -250,6 +246,27 @@
         footer.sticky-footer .copyright {
             line-height: 1;
             font-size: 0.8rem;
+        }
+        
+        /* Dashboard cards */
+        .border-left-primary {
+            border-left: 0.25rem solid var(--primary-color) !important;
+        }
+        
+        .border-left-success {
+            border-left: 0.25rem solid var(--success-color) !important;
+        }
+        
+        .border-left-info {
+            border-left: 0.25rem solid var(--info-color) !important;
+        }
+        
+        .border-left-warning {
+            border-left: 0.25rem solid var(--warning-color) !important;
+        }
+        
+        .border-left-danger {
+            border-left: 0.25rem solid var(--danger-color) !important;
         }
     </style>
 </head>
@@ -349,98 +366,25 @@
                     </form>
                     
                     <!-- Topbar Navbar -->
-                    <ul class="navbar-nav ml-auto">
-                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-                        <li class="nav-item dropdown no-arrow d-sm-none">
-                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bi bi-search"></i>
-                            </a>
-                            <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
-                                <form class="form-inline mr-auto w-100 navbar-search">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control bg-light border-0 small" placeholder="Tìm kiếm..." aria-label="Search" aria-describedby="basic-addon2">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary" type="button">
-                                                <i class="bi bi-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </li>
-                        
-                        <!-- Nav Item - Alerts -->
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bi bi-bell"></i>
-                                <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter">3+</span>
-                            </a>
-                            <!-- Dropdown - Alerts -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">Thông báo</h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-primary">
-                                            <i class="bi bi-chat-dots text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">12/12/2023</div>
-                                        <span class="font-weight-bold">Có bình luận mới cần duyệt!</span>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-success">
-                                            <i class="bi bi-person text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">11/12/2023</div>
-                                        Người dùng mới đã đăng ký!
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-warning">
-                                            <i class="bi bi-exclamation-triangle text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">10/12/2023</div>
-                                        Cảnh báo: Sản phẩm sắp hết hàng!
-                                    </div>
-                                </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Xem tất cả thông báo</a>
-                            </div>
-                        </li>
-                        
-                        <div class="topbar-divider d-none d-sm-block"></div>
-                        
+                    <ul class="navbar-nav ms-auto">
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= $_SESSION['user_name'] ?? 'Admin' ?></span>
-                                <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= $_SESSION['username'] ?? 'Admin' ?></span>
+                                <i class="bi bi-person-circle"></i>
                             </a>
                             <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                            <div class="dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="<?= BASE_URL ?>profile">
                                     <i class="bi bi-person fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Hồ sơ
                                 </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="bi bi-gear fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Cài đặt
-                                </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="bi bi-list-check fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Nhật ký hoạt động
-                                </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                                <a class="dropdown-item" href="<?= BASE_URL ?>">
+                                    <i class="bi bi-house fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Về trang chủ
+                                </a>
+                                <a class="dropdown-item" href="<?= BASE_URL ?>logout">
                                     <i class="bi bi-box-arrow-right fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Đăng xuất
                                 </a>
@@ -451,8 +395,14 @@
                 <!-- End of Topbar -->
                 
                 <!-- Begin Page Content -->
-                <?php include $view . '.php'; ?>
-                <!-- /.container-fluid -->
+                <div class="container-fluid">
+                    <?php
+                    if (isset($view)) {
+                        require_once PATH_VIEW . $view . '.php';
+                    }
+                    ?>
+                </div>
+                <!-- End of Page Content -->
             </div>
             <!-- End of Main Content -->
             
@@ -460,7 +410,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Hệ thống quản lý 2023</span>
+                        <span>Copyright &copy; <?= APP_NAME ?> <?= date('Y') ?></span>
                     </div>
                 </div>
             </footer>
@@ -472,42 +422,25 @@
     
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
-        <i class="bi bi-chevron-up"></i>
+        <i class="bi bi-arrow-up"></i>
     </a>
     
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Bạn chắc chắn muốn đăng xuất?</h5>
-                    <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Chọn "Đăng xuất" bên dưới nếu bạn đã sẵn sàng kết thúc phiên làm việc hiện tại.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Hủy</button>
-                    <a class="btn btn-primary" href="<?= BASE_URL ?>/user/logout">Đăng xuất</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    
     <!-- Bootstrap core JavaScript-->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- DataTables -->
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <!-- DataTables Vietnamese Language -->
+    <script src="<?= BASE_URL ?>assets/js/datatables-vietnamese.js"></script>
     
     <!-- Custom scripts -->
     <script>
         // Toggle the side navigation
         document.addEventListener('DOMContentLoaded', function() {
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const sidebarToggleTop = document.getElementById('sidebarToggleTop');
+            const sidebarToggle = document.body.querySelector('#sidebarToggle');
+            const sidebarToggleTop = document.body.querySelector('#sidebarToggleTop');
             const sidebar = document.querySelector('.sidebar');
             const content = document.querySelector('.content');
             
@@ -537,29 +470,26 @@
                     content.classList.remove('toggled');
                 }
             });
-            
-            // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
-            const fixedNavigation = document.querySelector('body.fixed-nav .sidebar');
-            if (fixedNavigation) {
-                fixedNavigation.on('mousewheel DOMMouseScroll wheel', function(e) {
-                    if (window.innerWidth > 768) {
-                        const e0 = e.originalEvent;
-                        const delta = e0.wheelDelta || -e0.detail;
-                        this.scrollTop += (delta < 0 ? 1 : -1) * 30;
-                        e.preventDefault();
-                    }
-                });
-            }
-            
-            // Initialize DataTables
-            if ($.fn.DataTable) {
-                $('.dataTable').DataTable({
-                    language: {
-                        url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json'
-                    }
-                });
-            }
         });
+        
+        // Hiển thị thông báo từ session nếu có
+        <?php if (isset($_SESSION['success'])): ?>
+            alert('<?= $_SESSION['success'] ?>');
+            <?php unset($_SESSION['success']); ?>
+        <?php endif; ?>
+        
+        <?php if (isset($_SESSION['error'])): ?>
+            alert('<?= $_SESSION['error'] ?>');
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+        
+        // Xác nhận xóa
+        function confirmDelete(message, url) {
+            if (confirm(message)) {
+                window.location.href = url;
+            }
+            return false;
+        }
     </script>
 </body>
 </html>

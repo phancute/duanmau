@@ -28,9 +28,20 @@ CREATE TABLE products (
     image_url VARCHAR(255), 
     category_id INT, 
     stock INT DEFAULT 0, 
+    status TINYINT(1) DEFAULT 1, 
+    featured TINYINT(1) DEFAULT 0, 
+    discount INT DEFAULT 0, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     FOREIGN KEY (category_id) REFERENCES categories(id) 
 ); 
+
+-- Đảm bảo các cột status, featured, discount tồn tại trong bảng products
+-- Sử dụng câu lệnh SQL an toàn để thêm cột nếu chưa tồn tại
+-- Lưu ý: Chạy từng câu lệnh riêng biệt để tránh lỗi nếu cột đã tồn tại
+ALTER TABLE products ADD COLUMN status TINYINT(1) DEFAULT 1;
+ALTER TABLE products ADD COLUMN featured TINYINT(1) DEFAULT 0;
+ALTER TABLE products ADD COLUMN discount INT DEFAULT 0;
+
 
 -- 4. Bảng bình luận sản phẩm 
 CREATE TABLE comments ( 
@@ -73,3 +84,9 @@ CREATE TABLE remember_tokens (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+-- Thêm các cột bị thiếu vào bảng products
+ALTER TABLE products
+ADD COLUMN status TINYINT(1) DEFAULT 1,
+ADD COLUMN featured TINYINT(1) DEFAULT 0,
+ADD COLUMN discount INT DEFAULT 0;

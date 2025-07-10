@@ -2,7 +2,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?= BASE_URL ?>">Trang chủ</a></li>
-            <li class="breadcrumb-item"><a href="<?= BASE_URL ?>category">Danh mục sản phẩm</a></li>
+            <li class="breadcrumb-item"><a href="<?= BASE_URL ?>categories">Danh mục sản phẩm</a></li>
             <li class="breadcrumb-item active" aria-current="page"><?= $category['name'] ?></li>
         </ol>
     </nav>
@@ -10,9 +10,17 @@
     <div class="row mb-4">
         <div class="col-md-12">
             <div class="card shadow-sm">
-                <div class="card-body">
-                    <h1 class="card-title"><?= $category['name'] ?></h1>
-                    <p class="card-text"><?= $category['description'] ?></p>
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="<?= BASE_URL . $category['image'] ?>" class="img-fluid rounded-start" alt="<?= $category['name'] ?>" style="height: 250px; width: 100%; object-fit: cover;">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h1 class="card-title"><?= $category['name'] ?></h1>
+                            <p class="card-text"><?= $category['description'] ?></p>
+                            <p class="card-text"><small class="text-muted">Số sản phẩm: <?= count($products) ?></small></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -40,9 +48,15 @@
                             <p class="card-text text-truncate"><?= $product['description'] ?></p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="text-danger fw-bold"><?= number_format($product['price'], 0, ',', '.') ?> đ</span>
-                                <?php if ($product['discount'] > 0): ?>
+                                <?php if (isset($product['discount']) && $product['discount'] > 0): ?>
                                     <span class="badge bg-danger">-<?= $product['discount'] ?>%</span>
                                 <?php endif; ?>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <span class="badge bg-<?= $product['status'] ? 'success' : 'danger' ?>">
+                                    <?= $product['status'] ? 'Còn hàng' : 'Hết hàng' ?>
+                                </span>
+                                <span class="text-muted small">Số lượng: <?= $product['stock'] ?></span>
                             </div>
                         </div>
                         <div class="card-footer bg-transparent">

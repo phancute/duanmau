@@ -10,12 +10,16 @@ try {
         
         // Danh mục
         '/categories'               => (new CategoryController)->index(),
-        '/category/detail'          => (new CategoryController)->detail(),
+        '/categories/detail'        => (new CategoryController)->detail(isset($params[0]) ? $params[0] : null),
         
         // Sản phẩm
         '/products'                 => (new ProductController)->index(),
-        '/product/detail'           => (new ProductController)->detail(),
-        '/product/category'         => (new ProductController)->category(),
+        '/product'                  => function() use ($params) {
+            echo '<script>console.log("Route /product được gọi với params = ' . json_encode($params) . '");</script>';
+            return (new ProductController)->detail(isset($params[0]) ? $params[0] : null);
+        },
+        '/product/detail'           => (new ProductController)->detail(isset($params[0]) ? $params[0] : null),
+        '/product/category'         => (new ProductController)->category(isset($params[0]) ? $params[0] : null),
         '/product/search'           => (new ProductController)->search(),
         '/product/add-comment'      => (new ProductController)->addComment(),
         
@@ -28,22 +32,22 @@ try {
         
         // Admin
         '/admin'                    => (new AdminController)->index(),
-        '/admin/categories'         => (new AdminController)->categories(),
-        '/admin/category/add'       => (new CategoryController)->add(),
-        '/admin/category/edit'      => (new CategoryController)->edit(),
-        '/admin/category/delete'    => (new CategoryController)->delete(),
+        '/admin/categories'         => (new CategoryAdminController)->index(),
+        '/admin/categories/add'     => (new CategoryAdminController)->add(),
+        '/admin/categories/edit'    => (new CategoryAdminController)->edit(isset($params[0]) ? $params[0] : null),
+        '/admin/categories/delete'  => (new CategoryAdminController)->delete(isset($params[0]) ? $params[0] : null),
         
-        '/admin/products'           => (new AdminController)->products(),
-        '/admin/product/add'        => (new ProductController)->add(),
-        '/admin/product/edit'       => (new ProductController)->edit(),
-        '/admin/product/delete'     => (new ProductController)->delete(),
+        '/admin/products'           => (new ProductAdminController)->index(),
+        '/admin/product/add'        => (new ProductAdminController)->add(),
+        '/admin/product/edit'       => (new ProductAdminController)->edit(isset($params[0]) ? $params[0] : null),
+        '/admin/product/delete'     => (new ProductAdminController)->delete(isset($params[0]) ? $params[0] : null),
         
         '/admin/comments'           => (new AdminController)->comments(),
-        '/admin/comment/approve'    => (new AdminController)->approveComment(),
-        '/admin/comment/reject'     => (new AdminController)->rejectComment(),
+        '/admin/comment/approve'    => (new AdminController)->approveComment(isset($params[0]) ? $params[0] : null),
+        '/admin/comment/reject'     => (new AdminController)->rejectComment(isset($params[0]) ? $params[0] : null),
         
         '/admin/users'              => (new AdminController)->users(),
-        '/admin/user/toggle-status' => (new AdminController)->toggleUserStatus(),
+        '/admin/user/toggle-status' => (new AdminController)->toggleUserStatus(isset($params[0]) ? $params[0] : null),
         
         '/admin/reports'            => (new AdminController)->reports(),
         

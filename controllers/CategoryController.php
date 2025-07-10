@@ -18,6 +18,15 @@ class CategoryController
     {
         $categories = $this->categoryModel->getAll();
         
+        // Gán đường dẫn hình ảnh mặc định nếu không có
+        foreach ($categories as &$category) {
+            if (empty($category['image'])) {
+                // Sử dụng hình ảnh mặc định dựa trên ID của danh mục
+                $defaultImageIndex = ($category['id'] % 4) + 1; // Lấy số từ 1-4
+                $category['image'] = 'assets/images/category' . $defaultImageIndex . '.jpg.svg';
+            }
+        }
+        
         $title = 'Danh mục sản phẩm - PolyShop';
         $view = 'category_list';
         
@@ -33,8 +42,15 @@ class CategoryController
         
         if (!$category) {
             $_SESSION['error'] = 'Không tìm thấy danh mục';
-            header('Location: ' . BASE_URL . 'category');
+            header('Location: ' . BASE_URL . 'categories');
             exit;
+        }
+        
+        // Gán đường dẫn hình ảnh mặc định nếu không có
+        if (empty($category['image'])) {
+            // Sử dụng hình ảnh mặc định dựa trên ID của danh mục
+            $defaultImageIndex = ($category['id'] % 4) + 1; // Lấy số từ 1-4
+            $category['image'] = 'assets/images/category' . $defaultImageIndex . '.jpg.svg';
         }
         
         $products = $this->productModel->getByCategory($id);

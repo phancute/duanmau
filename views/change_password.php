@@ -18,7 +18,7 @@
                         </div>
                     <?php endif; ?>
                     
-                    <form action="<?= BASE_URL ?>user/change-password" method="POST" class="needs-validation" novalidate>
+                    <form action="<?= BASE_URL ?>change-password" method="POST" class="needs-validation" novalidate>
                         <div class="mb-3">
                             <label for="current_password" class="form-label">Mật khẩu hiện tại <span class="text-danger">*</span></label>
                             <input type="password" class="form-control" id="current_password" name="current_password" required>
@@ -40,7 +40,7 @@
                         
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
-                            <a href="<?= BASE_URL ?>user/profile" class="btn btn-outline-secondary">Quay lại</a>
+                            <a href="<?= BASE_URL ?>profile" class="btn btn-outline-secondary">Quay lại</a>
                         </div>
                     </form>
                 </div>

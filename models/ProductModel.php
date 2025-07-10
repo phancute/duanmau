@@ -21,6 +21,19 @@ class ProductModel extends BaseModel
         return $stmt->fetchAll();
     }
 
+    // Lấy tất cả sản phẩm với thông tin danh mục
+    public function getAllWithCategory()
+    {
+        $sql = "SELECT p.*, c.name as category_name 
+                FROM {$this->table} p 
+                LEFT JOIN categories c ON p.category_id = c.id
+                ORDER BY p.id DESC";
+        $stmt = $this->getPdo()->prepare($sql);
+        $stmt->execute();
+        
+        return $stmt->fetchAll();
+    }
+
     // Lấy sản phẩm theo ID
     public function getById($id)
     {
@@ -53,9 +66,9 @@ class ProductModel extends BaseModel
     public function create($data)
     {
         $sql = "INSERT INTO {$this->table} 
-                (name, description, specifications, price, image_url, category_id, stock) 
+                (name, description, specifications, price, image_url, category_id, stock, status, featured, discount) 
                 VALUES 
-                (:name, :description, :specifications, :price, :image_url, :category_id, :stock)";
+                (:name, :description, :specifications, :price, :image_url, :category_id, :stock, :status, :featured, :discount)";
         
         $stmt = $this->getPdo()->prepare($sql);
         $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
@@ -65,6 +78,9 @@ class ProductModel extends BaseModel
         $stmt->bindParam(':image_url', $data['image_url'], PDO::PARAM_STR);
         $stmt->bindParam(':category_id', $data['category_id'], PDO::PARAM_INT);
         $stmt->bindParam(':stock', $data['stock'], PDO::PARAM_INT);
+        $stmt->bindParam(':status', $data['status'], PDO::PARAM_INT);
+        $stmt->bindParam(':featured', $data['featured'], PDO::PARAM_INT);
+        $stmt->bindParam(':discount', $data['discount'], PDO::PARAM_INT);
         
         return $stmt->execute();
     }
@@ -79,7 +95,10 @@ class ProductModel extends BaseModel
                 price = :price, 
                 image_url = :image_url, 
                 category_id = :category_id, 
-                stock = :stock 
+                stock = :stock, 
+                status = :status, 
+                featured = :featured, 
+                discount = :discount 
                 WHERE id = :id";
         
         $stmt = $this->getPdo()->prepare($sql);
@@ -90,6 +109,9 @@ class ProductModel extends BaseModel
         $stmt->bindParam(':image_url', $data['image_url'], PDO::PARAM_STR);
         $stmt->bindParam(':category_id', $data['category_id'], PDO::PARAM_INT);
         $stmt->bindParam(':stock', $data['stock'], PDO::PARAM_INT);
+        $stmt->bindParam(':status', $data['status'], PDO::PARAM_INT);
+        $stmt->bindParam(':featured', $data['featured'], PDO::PARAM_INT);
+        $stmt->bindParam(':discount', $data['discount'], PDO::PARAM_INT);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         
         return $stmt->execute();
@@ -157,17 +179,44 @@ class ProductModel extends BaseModel
         return $stmt->fetchAll();
     }
     
-    // Đếm số lượng sản phẩm theo danh mục
-    public function countByCategory()
+    // Lấy sản phẩm nổi bật (sản phẩm có giảm giá hoặc có lượt xem cao)
+    public function getFeatured($limit = 5)
     {
-        $sql = "SELECT c.id, c.name, COUNT(p.id) as count 
-                FROM categories c 
-                LEFT JOIN {$this->table} p ON c.id = p.category_id 
-                GROUP BY c.id, c.name 
-                ORDER BY c.name ASC";
+        $sql = "SELECT p.*, c.name as category_name 
+                FROM {$this->table} p 
+                LEFT JOIN categories c ON p.category_id = c.id 
+                WHERE p.discount > 0 OR p.status = 1 
+                ORDER BY p.discount DESC, p.price DESC 
+                LIMIT :limit";
         $stmt = $this->getPdo()->prepare($sql);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         
         return $stmt->fetchAll();
+    }
+    
+    // Đếm số lượng sản phẩm theo danh mục
+    public function countByCategory($categoryId = null)
+    {
+        if ($categoryId !== null) {
+            // Đếm số sản phẩm cho một danh mục cụ thể
+            $sql = "SELECT COUNT(*) FROM {$this->table} WHERE category_id = :category_id";
+            $stmt = $this->getPdo()->prepare($sql);
+            $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchColumn();
+        } else {
+            // Đếm số sản phẩm cho tất cả các danh mục
+            $sql = "SELECT c.id, c.name, COUNT(p.id) as count 
+                    FROM categories c 
+                    LEFT JOIN {$this->table} p ON c.id = p.category_id 
+                    GROUP BY c.id, c.name 
+                    ORDER BY c.name ASC";
+            $stmt = $this->getPdo()->prepare($sql);
+            $stmt->execute();
+            
+            return $stmt->fetchAll();
+        }
     }
 }

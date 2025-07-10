@@ -284,32 +284,31 @@ function getChartColor($index) {
                     }
                 },
                 scales: {
-                    xAxes: [{
+                    x: {
                         time: {
                             unit: 'month'
                         },
-                        gridLines: {
+                        grid: {
                             display: false,
                             drawBorder: false
                         },
                         ticks: {
                             maxTicksLimit: 6
                         }
-                    }],
-                    yAxes: [{
+                    },
+                    y: {
                         ticks: {
                             maxTicksLimit: 5,
                             padding: 10,
                             beginAtZero: true
                         },
-                        gridLines: {
+                        grid: {
                             color: 'rgb(234, 236, 244)',
-                            zeroLineColor: 'rgb(234, 236, 244)',
                             drawBorder: false,
                             borderDash: [2],
                             zeroLineBorderDash: [2]
                         }
-                    }],
+                    },
                 },
                 legend: {
                     display: false
@@ -352,20 +351,22 @@ function getChartColor($index) {
             },
             options: {
                 maintainAspectRatio: false,
-                tooltips: {
-                    backgroundColor: 'rgb(255,255,255)',
-                    bodyFontColor: '#858796',
-                    borderColor: '#dddfeb',
-                    borderWidth: 1,
-                    xPadding: 15,
-                    yPadding: 15,
-                    displayColors: false,
-                    caretPadding: 10,
+                plugins: {
+                    tooltip: {
+                        backgroundColor: 'rgb(255,255,255)',
+                        bodyFontColor: '#858796',
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        caretPadding: 10,
+                    },
+                    legend: {
+                        display: false
+                    },
                 },
-                legend: {
-                    display: false
-                },
-                cutoutPercentage: 80,
+                cutout: '80%',
             },
         });
     });

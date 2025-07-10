@@ -10,7 +10,7 @@
                 </div>
                 <div class="carousel-inner rounded shadow">
                     <div class="carousel-item active">
-                        <img src="<?= BASE_URL ?>assets/images/banner1.jpg" class="d-block w-100" alt="Banner 1" style="height: 400px; object-fit: cover;">
+                        <img src="<?= BASE_URL ?>assets/images/banner1.jpg.svg" class="d-block w-100" alt="Banner 1" style="height: 400px; object-fit: cover;">
                         <div class="carousel-caption d-none d-md-block">
                             <h2>Chào mừng đến với <?= APP_NAME ?></h2>
                             <p>Khám phá các sản phẩm chất lượng cao với giá cả phải chăng</p>
@@ -18,7 +18,7 @@
                         </div>
                     </div>
                     <div class="carousel-item">
-                        <img src="<?= BASE_URL ?>assets/images/banner2.jpg" class="d-block w-100" alt="Banner 2" style="height: 400px; object-fit: cover;">
+                        <img src="<?= BASE_URL ?>assets/images/banner2.jpg.svg" class="d-block w-100" alt="Banner 2" style="height: 400px; object-fit: cover;">
                         <div class="carousel-caption d-none d-md-block">
                             <h2>Khuyến mãi đặc biệt</h2>
                             <p>Giảm giá lên đến 50% cho các sản phẩm mới</p>
@@ -26,7 +26,7 @@
                         </div>
                     </div>
                     <div class="carousel-item">
-                        <img src="<?= BASE_URL ?>assets/images/banner3.jpg" class="d-block w-100" alt="Banner 3" style="height: 400px; object-fit: cover;">
+                        <img src="<?= BASE_URL ?>assets/images/banner3.jpg.svg" class="d-block w-100" alt="Banner 3" style="height: 400px; object-fit: cover;">
                         <div class="carousel-caption d-none d-md-block">
                             <h2>Sản phẩm mới</h2>
                             <p>Khám phá các sản phẩm mới nhất của chúng tôi</p>
@@ -64,7 +64,7 @@
                                         <div class="card-body text-center">
                                             <h5 class="card-title"><?= $category['name'] ?></h5>
                                             <p class="card-text small text-muted"><?= $category['product_count'] ?? 0 ?> sản phẩm</p>
-                                            <a href="<?= BASE_URL ?>category/<?= $category['id'] ?>" class="btn btn-sm btn-primary">Xem sản phẩm</a>
+                                            <a href="<?= BASE_URL ?>categories/detail/<?= $category['id'] ?>" class="btn btn-sm btn-primary">Xem sản phẩm</a>
                                         </div>
                                     </div>
                                 </div>
@@ -72,41 +72,41 @@
                         <?php else: ?>
                             <div class="col-6 col-md-3">
                                 <div class="card category-card h-100">
-                                    <img src="<?= BASE_URL ?>assets/images/category1.jpg" class="card-img-top" alt="Điện thoại" style="height: 150px; object-fit: cover;">
+                                    <img src="<?= BASE_URL ?>assets/images/category1.jpg.svg" class="card-img-top" alt="Điện thoại" style="height: 150px; object-fit: cover;">
                                     <div class="card-body text-center">
                                         <h5 class="card-title">Điện thoại</h5>
                                         <p class="card-text small text-muted">24 sản phẩm</p>
-                                        <a href="<?= BASE_URL ?>category/1" class="btn btn-sm btn-primary">Xem sản phẩm</a>
+                                        <a href="<?= BASE_URL ?>categories/detail/1" class="btn btn-sm btn-primary">Xem sản phẩm</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-6 col-md-3">
                                 <div class="card category-card h-100">
-                                    <img src="<?= BASE_URL ?>assets/images/category2.jpg" class="card-img-top" alt="Laptop" style="height: 150px; object-fit: cover;">
+                                    <img src="<?= BASE_URL ?>assets/images/category2.jpg.svg" class="card-img-top" alt="Laptop" style="height: 150px; object-fit: cover;">
                                     <div class="card-body text-center">
                                         <h5 class="card-title">Laptop</h5>
                                         <p class="card-text small text-muted">18 sản phẩm</p>
-                                        <a href="<?= BASE_URL ?>category/2" class="btn btn-sm btn-primary">Xem sản phẩm</a>
+                                        <a href="<?= BASE_URL ?>categories/detail/2" class="btn btn-sm btn-primary">Xem sản phẩm</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-6 col-md-3">
                                 <div class="card category-card h-100">
-                                    <img src="<?= BASE_URL ?>assets/images/category3.jpg" class="card-img-top" alt="Máy tính bảng" style="height: 150px; object-fit: cover;">
+                                    <img src="<?= BASE_URL ?>assets/images/category3.jpg.svg" class="card-img-top" alt="Máy tính bảng" style="height: 150px; object-fit: cover;">
                                     <div class="card-body text-center">
                                         <h5 class="card-title">Máy tính bảng</h5>
                                         <p class="card-text small text-muted">12 sản phẩm</p>
-                                        <a href="<?= BASE_URL ?>category/3" class="btn btn-sm btn-primary">Xem sản phẩm</a>
+                                        <a href="<?= BASE_URL ?>categories/detail/3" class="btn btn-sm btn-primary">Xem sản phẩm</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-6 col-md-3">
                                 <div class="card category-card h-100">
-                                    <img src="<?= BASE_URL ?>assets/images/category4.jpg" class="card-img-top" alt="Phụ kiện" style="height: 150px; object-fit: cover;">
+                                    <img src="<?= BASE_URL ?>assets/images/category4.jpg.svg" class="card-img-top" alt="Phụ kiện" style="height: 150px; object-fit: cover;">
                                     <div class="card-body text-center">
                                         <h5 class="card-title">Phụ kiện</h5>
                                         <p class="card-text small text-muted">36 sản phẩm</p>
-                                        <a href="<?= BASE_URL ?>category/4" class="btn btn-sm btn-primary">Xem sản phẩm</a>
+                                        <a href="<?= BASE_URL ?>categories/detail/4" class="btn btn-sm btn-primary">Xem sản phẩm</a>
                                     </div>
                                 </div>
                             </div>
@@ -131,14 +131,20 @@
                             <?php foreach ($featured_products as $product): ?>
                                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                                     <div class="card product-card h-100">
-                                        <?php if ($product['discount'] > 0): ?>
+                                        <?php if (isset($product['discount']) && $product['discount'] > 0): ?>
                                             <div class="badge-discount">-<?= $product['discount'] ?>%</div>
                                         <?php endif; ?>
                                         <img src="<?= BASE_URL . $product['image'] ?>" class="card-img-top" alt="<?= $product['name'] ?>">
                                         <div class="card-body">
                                             <h5 class="card-title"><?= $product['name'] ?></h5>
                                             <p class="card-text small text-muted"><?= $product['category_name'] ?></p>
-                                            <?php if ($product['discount'] > 0): ?>
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="badge bg-<?= $product['status'] ? 'success' : 'danger' ?>">
+                                                    <?= $product['status'] ? 'Còn hàng' : 'Hết hàng' ?>
+                                                </span>
+                                                <span class="text-muted small">SL: <?= $product['stock'] ?></span>
+                                            </div>
+                                            <?php if (isset($product['discount']) && $product['discount'] > 0): ?>
                                                 <p class="card-text mb-0">
                                                     <span class="price-original"><?= format_price($product['price']) ?></span>
                                                 </p>
@@ -152,7 +158,7 @@
                                             <?php endif; ?>
                                         </div>
                                         <div class="card-footer bg-white border-top-0">
-                                            <a href="<?= BASE_URL ?>product/<?= $product['id'] ?>" class="btn btn-primary w-100">Xem chi tiết</a>
+                                            <a href="<?= BASE_URL ?>product/detail/<?= $product['id'] ?>" class="btn btn-primary w-100">Xem chi tiết</a>
                                         </div>
                                     </div>
                                 </div>
@@ -162,14 +168,14 @@
                             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                                 <div class="card product-card h-100">
                                     <div class="badge-discount">Mới</div>
-                                    <img src="<?= BASE_URL ?>assets/images/product1.jpg" class="card-img-top" alt="iPhone 13 Pro Max">
+                                    <img src="<?= BASE_URL ?>assets/images/product1.jpg.svg" class="card-img-top" alt="iPhone 13 Pro Max">
                                     <div class="card-body">
                                         <h5 class="card-title">iPhone 13 Pro Max</h5>
                                         <p class="card-text small text-muted">Điện thoại</p>
                                         <p class="card-text price-discount">29.990.000 ₫</p>
                                     </div>
                                     <div class="card-footer bg-white border-top-0">
-                                        <a href="<?= BASE_URL ?>product/1" class="btn btn-primary w-100">Xem chi tiết</a>
+                                        <a href="<?= BASE_URL ?>product/detail/1" class="btn btn-primary w-100">Xem chi tiết</a>
                                     </div>
                                 </div>
                             </div>
@@ -177,7 +183,7 @@
                             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                                 <div class="card product-card h-100">
                                     <div class="badge-discount">-10%</div>
-                                    <img src="<?= BASE_URL ?>assets/images/product2.jpg" class="card-img-top" alt="Samsung Galaxy S22 Ultra">
+                                    <img src="<?= BASE_URL ?>assets/images/product2.jpg.svg" class="card-img-top" alt="Samsung Galaxy S22 Ultra">
                                     <div class="card-body">
                                         <h5 class="card-title">Samsung Galaxy S22 Ultra</h5>
                                         <p class="card-text small text-muted">Điện thoại</p>
@@ -187,7 +193,7 @@
                                         <p class="card-text price-discount">25.990.000 ₫</p>
                                     </div>
                                     <div class="card-footer bg-white border-top-0">
-                                        <a href="<?= BASE_URL ?>product/2" class="btn btn-primary w-100">Xem chi tiết</a>
+                                        <a href="<?= BASE_URL ?>product/detail/2" class="btn btn-primary w-100">Xem chi tiết</a>
                                     </div>
                                 </div>
                             </div>
@@ -195,28 +201,28 @@
                             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                                 <div class="card product-card h-100">
                                     <div class="badge-discount">Hot</div>
-                                    <img src="<?= BASE_URL ?>assets/images/product3.jpg" class="card-img-top" alt="MacBook Pro M1">
+                                    <img src="<?= BASE_URL ?>assets/images/product3.jpg.svg" class="card-img-top" alt="MacBook Pro M1">
                                     <div class="card-body">
                                         <h5 class="card-title">MacBook Pro M1</h5>
                                         <p class="card-text small text-muted">Laptop</p>
                                         <p class="card-text price-discount">32.990.000 ₫</p>
                                     </div>
                                     <div class="card-footer bg-white border-top-0">
-                                        <a href="<?= BASE_URL ?>product/3" class="btn btn-primary w-100">Xem chi tiết</a>
+                                        <a href="<?= BASE_URL ?>product/detail/3" class="btn btn-primary w-100">Xem chi tiết</a>
                                     </div>
                                 </div>
                             </div>
                             <!-- Product 4 -->
                             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                                 <div class="card product-card h-100">
-                                    <img src="<?= BASE_URL ?>assets/images/product4.jpg" class="card-img-top" alt="iPad Air 5">
+                                    <img src="<?= BASE_URL ?>assets/images/product4.jpg.svg" class="card-img-top" alt="iPad Air 5">
                                     <div class="card-body">
                                         <h5 class="card-title">iPad Air 5</h5>
                                         <p class="card-text small text-muted">Máy tính bảng</p>
                                         <p class="card-text price-discount">16.990.000 ₫</p>
                                     </div>
                                     <div class="card-footer bg-white border-top-0">
-                                        <a href="<?= BASE_URL ?>product/4" class="btn btn-primary w-100">Xem chi tiết</a>
+                                        <a href="<?= BASE_URL ?>product/detail/4" class="btn btn-primary w-100">Xem chi tiết</a>
                                     </div>
                                 </div>
                             </div>
@@ -241,14 +247,20 @@
                             <?php foreach ($latest_products as $product): ?>
                                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                                     <div class="card product-card h-100">
-                                        <?php if ($product['discount'] > 0): ?>
+                                        <?php if (isset($product['discount']) && $product['discount'] > 0): ?>
                                             <div class="badge-discount">-<?= $product['discount'] ?>%</div>
                                         <?php endif; ?>
                                         <img src="<?= BASE_URL . $product['image'] ?>" class="card-img-top" alt="<?= $product['name'] ?>">
                                         <div class="card-body">
                                             <h5 class="card-title"><?= $product['name'] ?></h5>
                                             <p class="card-text small text-muted"><?= $product['category_name'] ?></p>
-                                            <?php if ($product['discount'] > 0): ?>
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="badge bg-<?= $product['status'] ? 'success' : 'danger' ?>">
+                                                    <?= $product['status'] ? 'Còn hàng' : 'Hết hàng' ?>
+                                                </span>
+                                                <span class="text-muted small">SL: <?= $product['stock'] ?></span>
+                                            </div>
+                                            <?php if (isset($product['discount']) && $product['discount'] > 0): ?>
                                                 <p class="card-text mb-0">
                                                     <span class="price-original"><?= format_price($product['price']) ?></span>
                                                 </p>
@@ -262,7 +274,7 @@
                                             <?php endif; ?>
                                         </div>
                                         <div class="card-footer bg-white border-top-0">
-                                            <a href="<?= BASE_URL ?>product/<?= $product['id'] ?>" class="btn btn-primary w-100">Xem chi tiết</a>
+                                            <a href="<?= BASE_URL ?>product/detail/<?= $product['id'] ?>" class="btn btn-primary w-100">Xem chi tiết</a>
                                         </div>
                                     </div>
                                 </div>
@@ -272,7 +284,7 @@
                             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                                 <div class="card product-card h-100">
                                     <div class="badge-discount">-15%</div>
-                                    <img src="<?= BASE_URL ?>assets/images/product5.jpg" class="card-img-top" alt="Xiaomi 12 Pro">
+                                    <img src="<?= BASE_URL ?>assets/images/product5.jpg.svg" class="card-img-top" alt="Xiaomi 12 Pro">
                                     <div class="card-body">
                                         <h5 class="card-title">Xiaomi 12 Pro</h5>
                                         <p class="card-text small text-muted">Điện thoại</p>
@@ -282,21 +294,21 @@
                                         <p class="card-text price-discount">16.990.000 ₫</p>
                                     </div>
                                     <div class="card-footer bg-white border-top-0">
-                                        <a href="<?= BASE_URL ?>product/5" class="btn btn-primary w-100">Xem chi tiết</a>
+                                        <a href="<?= BASE_URL ?>product/detail/5" class="btn btn-primary w-100">Xem chi tiết</a>
                                     </div>
                                 </div>
                             </div>
                             <!-- Product 6 -->
                             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                                 <div class="card product-card h-100">
-                                    <img src="<?= BASE_URL ?>assets/images/product6.jpg" class="card-img-top" alt="Dell XPS 13">
+                                    <img src="<?= BASE_URL ?>assets/images/product6.jpg.svg" class="card-img-top" alt="Dell XPS 13">
                                     <div class="card-body">
                                         <h5 class="card-title">Dell XPS 13</h5>
                                         <p class="card-text small text-muted">Laptop</p>
                                         <p class="card-text price-discount">29.990.000 ₫</p>
                                     </div>
                                     <div class="card-footer bg-white border-top-0">
-                                        <a href="<?= BASE_URL ?>product/6" class="btn btn-primary w-100">Xem chi tiết</a>
+                                        <a href="<?= BASE_URL ?>product/detail/6" class="btn btn-primary w-100">Xem chi tiết</a>
                                     </div>
                                 </div>
                             </div>
@@ -304,7 +316,7 @@
                             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                                 <div class="card product-card h-100">
                                     <div class="badge-discount">-8%</div>
-                                    <img src="<?= BASE_URL ?>assets/images/product7.jpg" class="card-img-top" alt="Samsung Galaxy Tab S8">
+                                    <img src="<?= BASE_URL ?>assets/images/product7.jpg.svg" class="card-img-top" alt="Samsung Galaxy Tab S8">
                                     <div class="card-body">
                                         <h5 class="card-title">Samsung Galaxy Tab S8</h5>
                                         <p class="card-text small text-muted">Máy tính bảng</p>
@@ -314,7 +326,7 @@
                                         <p class="card-text price-discount">17.490.000 ₫</p>
                                     </div>
                                     <div class="card-footer bg-white border-top-0">
-                                        <a href="<?= BASE_URL ?>product/7" class="btn btn-primary w-100">Xem chi tiết</a>
+                                        <a href="<?= BASE_URL ?>product/detail/7" class="btn btn-primary w-100">Xem chi tiết</a>
                                     </div>
                                 </div>
                             </div>
@@ -322,14 +334,14 @@
                             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                                 <div class="card product-card h-100">
                                     <div class="badge-discount">Mới</div>
-                                    <img src="<?= BASE_URL ?>assets/images/product8.jpg" class="card-img-top" alt="Apple Watch Series 7">
+                                    <img src="<?= BASE_URL ?>assets/images/product8.jpg.svg" class="card-img-top" alt="Apple Watch Series 7">
                                     <div class="card-body">
                                         <h5 class="card-title">Apple Watch Series 7</h5>
                                         <p class="card-text small text-muted">Phụ kiện</p>
                                         <p class="card-text price-discount">10.990.000 ₫</p>
                                     </div>
                                     <div class="card-footer bg-white border-top-0">
-                                        <a href="<?= BASE_URL ?>product/8" class="btn btn-primary w-100">Xem chi tiết</a>
+                                        <a href="<?= BASE_URL ?>product/detail/8" class="btn btn-primary w-100">Xem chi tiết</a>
                                     </div>
                                 </div>
                             </div>

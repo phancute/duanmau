@@ -22,9 +22,17 @@ require_once PATH_CONTROLLER . 'CategoryController.php';
 require_once PATH_CONTROLLER . 'ProductController.php';
 require_once PATH_CONTROLLER . 'UserController.php';
 require_once PATH_CONTROLLER . 'AdminController.php';
+require_once PATH_CONTROLLER . 'CategoryAdminController.php';
+require_once PATH_CONTROLLER . 'ProductAdminController.php';
 
 // Lấy action từ URL
 $action = isset($_GET['action']) ? $_GET['action'] : '/';
+
+// Xử lý các tham số trong URL
+$params = [];
+if (isset($_GET['params']) && !empty($_GET['params'])) {
+    $params = explode('/', $_GET['params']);
+}
 
 // Tải router
 require_once 'routes/index.php';

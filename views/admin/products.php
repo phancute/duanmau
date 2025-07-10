@@ -1,6 +1,17 @@
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Quản lý sản phẩm</h1>
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                <?php if (isset($_GET['category']) && isset($category)): ?>
+                    Sản phẩm trong danh mục "<?= $category['name'] ?>"
+                    <a href="<?= BASE_URL ?>admin/products" class="btn btn-sm btn-outline-secondary ms-2">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                <?php else: ?>
+                    Quản lý sản phẩm
+                <?php endif; ?>
+            </h1>
+        </div>
         <a href="<?= BASE_URL ?>admin/product/add" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Thêm sản phẩm mới
         </a>
@@ -38,7 +49,11 @@
         <div class="card-body">
             <?php if (empty($products)): ?>
                 <div class="alert alert-info">
-                    Chưa có sản phẩm nào. Hãy thêm sản phẩm mới.
+                    <?php if (isset($_GET['category'])): ?>
+                        Không có sản phẩm nào trong danh mục này. <a href="<?= BASE_URL ?>admin/products">Xem tất cả sản phẩm</a>
+                    <?php else: ?>
+                        Chưa có sản phẩm nào. Hãy thêm sản phẩm mới.
+                    <?php endif; ?>
                 </div>
             <?php else: ?>
                 <div class="table-responsive">
@@ -51,6 +66,7 @@
                                 <th width="10%">Danh mục</th>
                                 <th width="10%">Giá</th>
                                 <th width="5%">Giảm giá</th>
+                                <th width="5%">Số lượng</th>
                                 <th width="5%">Trạng thái</th>
                                 <th width="10%">Ngày tạo</th>
                                 <th width="10%">Thao tác</th>
@@ -61,18 +77,21 @@
                                 <tr>
                                     <td><?= $product['id'] ?></td>
                                     <td class="text-center">
-                                        <img src="<?= $product['image'] ? BASE_URL . 'uploads/' . $product['image'] : 'https://via.placeholder.com/80x80' ?>" 
+                                        <img src="<?= $product['image_url'] ? BASE_URL . 'assets/uploads/' . $product['image_url'] : 'https://via.placeholder.com/80x80' ?>" 
                                              alt="<?= $product['name'] ?>" class="img-thumbnail" width="80">
                                     </td>
                                     <td><?= $product['name'] ?></td>
                                     <td><?= $product['category_name'] ?></td>
                                     <td class="text-end"><?= number_format($product['price'], 0, ',', '.') ?> đ</td>
                                     <td class="text-center">
-                                        <?php if ($product['discount'] > 0): ?>
+                                        <?php if (isset($product['discount']) && $product['discount'] > 0): ?>
                                             <span class="badge bg-danger"><?= $product['discount'] ?>%</span>
                                         <?php else: ?>
                                             <span class="badge bg-secondary">0%</span>
                                         <?php endif; ?>
+                                    </td>
+                                    <td class="text-center">
+                                        <?= $product['stock'] ?>
                                     </td>
                                     <td class="text-center">
                                         <span class="badge bg-<?= $product['status'] ? 'success' : 'danger' ?>">
@@ -124,12 +143,31 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        $('#dataTable').DataTable({
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.10.25/i18n/Vietnamese.json'
-            },
-            order: [[0, 'desc']]
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof $ !== 'undefined') {
+            // Đảm bảo biến vietnameseLanguage đã được định nghĩa trước khi sử dụng
+            var checkDataTablesLanguage = setInterval(function() {
+                if (typeof vietnameseLanguage !== 'undefined') {
+                    clearInterval(checkDataTablesLanguage);
+                    $('#dataTable').DataTable({
+                        language: vietnameseLanguage,
+                        order: [[0, 'desc']]
+                    });
+                }
+            }, 100);
+            
+            // Đặt thời gian chờ tối đa để tránh vòng lặp vô hạn
+            setTimeout(function() {
+                clearInterval(checkDataTablesLanguage);
+                if (typeof vietnameseLanguage === 'undefined') {
+                    console.error('Vietnamese language file not loaded. Using default language.');
+                    $('#dataTable').DataTable({
+                        order: [[0, 'desc']]
+                    });
+                }
+            }, 3000);
+        } else {
+            console.error('jQuery is not loaded. DataTable initialization failed.');
+        }
     });
 </script>

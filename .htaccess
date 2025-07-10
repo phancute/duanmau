@@ -1,11 +1,42 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /BaseExam/
-    
-    # Nếu không phải là file hoặc thư mục thực tế
+    RewriteBase /
+
+    # Chuyển hướng tất cả các yêu cầu không phải là tệp hoặc thư mục thực tế đến index.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    
-    # Chuyển hướng tất cả các request đến index.php với tham số action
-    RewriteRule ^(.*)$ index.php?action=/$1 [QSA,L]
+    RewriteRule ^(.*)$ index.php?action=/$1 [L,QSA]
+
+    # Xử lý trường hợp đặc biệt cho URL /product/ID
+    RewriteRule ^product/([0-9]+)$ index.php?action=/product&params=$1 [L,QSA]
+
+    # Xử lý trường hợp đặc biệt cho URL /product/detail/ID
+    RewriteRule ^product/detail/([0-9]+)$ index.php?action=/product/detail&params=$1 [L,QSA]
+
+    # Xử lý trường hợp đặc biệt cho URL /product/category/ID
+    RewriteRule ^product/category/([0-9]+)$ index.php?action=/product/category&params=$1 [L,QSA]
+
+    # Xử lý trường hợp đặc biệt cho URL /categories/detail/ID
+    RewriteRule ^categories/detail/([0-9]+)$ index.php?action=/categories/detail&params=$1 [L,QSA]
+
+    # Xử lý trường hợp đặc biệt cho URL /admin/categories/edit/ID
+    RewriteRule ^admin/categories/edit/([0-9]+)$ index.php?action=/admin/categories/edit&params=$1 [L,QSA]
+
+    # Xử lý trường hợp đặc biệt cho URL /admin/categories/delete/ID
+    RewriteRule ^admin/categories/delete/([0-9]+)$ index.php?action=/admin/categories/delete&params=$1 [L,QSA]
+
+    # Xử lý trường hợp đặc biệt cho URL /admin/product/edit/ID
+    RewriteRule ^admin/product/edit/([0-9]+)$ index.php?action=/admin/product/edit&params=$1 [L,QSA]
+
+    # Xử lý trường hợp đặc biệt cho URL /admin/product/delete/ID
+    RewriteRule ^admin/product/delete/([0-9]+)$ index.php?action=/admin/product/delete&params=$1 [L,QSA]
+
+    # Xử lý trường hợp đặc biệt cho URL /admin/comment/approve/ID
+    RewriteRule ^admin/comment/approve/([0-9]+)$ index.php?action=/admin/comment/approve&params=$1 [L,QSA]
+
+    # Xử lý trường hợp đặc biệt cho URL /admin/comment/reject/ID
+    RewriteRule ^admin/comment/reject/([0-9]+)$ index.php?action=/admin/comment/reject&params=$1 [L,QSA]
+
+    # Xử lý trường hợp đặc biệt cho URL /admin/user/toggle-status/ID
+    RewriteRule ^admin/user/toggle-status/([0-9]+)$ index.php?action=/admin/user/toggle-status&params=$1 [L,QSA]
 </IfModule>

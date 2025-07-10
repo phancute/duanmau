@@ -265,17 +265,51 @@ class UserController
      */
     public function logout()
     {
+        // Ghi log thông tin session trước khi đăng xuất
+        error_log('Session trước khi đăng xuất: ' . json_encode($_SESSION));
+        
+        // Lưu trữ thông báo thành công tạm thời
+        $success_message = 'Đăng xuất thành công';
+        $console_log = 'Đăng xuất thành công: ' . date('Y-m-d H:i:s');
+        
         // Xóa cookie remember token
         if (isset($_COOKIE['remember_token'])) {
             $this->userModel->deleteRememberToken($_COOKIE['remember_token']);
             setcookie('remember_token', '', time() - 3600, '/', '', false, true);
         }
         
-        // Xóa session
-        session_unset();
+        // Xóa tất cả dữ liệu session
+        $_SESSION = array();
+        
+        // Xóa cookie session nếu có
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
+        
+        // Hủy session
         session_destroy();
         
-        header('Location: ' . BASE_URL);
+        // Khởi tạo session mới
+        session_start();
+        
+        // Thiết lập thông báo thành công trong session mới
+        $_SESSION['success'] = $success_message;
+        $_SESSION['console_log'] = $console_log;
+        
+        // Đảm bảo không có thông tin người dùng trong session mới
+        unset($_SESSION['user_id']);
+        unset($_SESSION['username']);
+        unset($_SESSION['user_role']);
+        
+        // Ghi log thông tin session sau khi đăng xuất
+        error_log('Session sau khi đăng xuất: ' . json_encode($_SESSION));
+        
+        // Chuyển hướng về trang đăng nhập
+        header('Location: ' . BASE_URL . 'login');
         exit;
     }
     
@@ -286,7 +320,7 @@ class UserController
     {
         // Kiểm tra đăng nhập
         if (!isset($_SESSION['user_id'])) {
-            $_SESSION['redirect'] = BASE_URL . 'user/profile';
+            $_SESSION['redirect'] = BASE_URL . 'profile';
             $_SESSION['error'] = 'Vui lòng đăng nhập để xem thông tin tài khoản';
             header('Location: ' . BASE_URL . 'login');
             exit;
@@ -317,7 +351,7 @@ class UserController
     {
         // Kiểm tra đăng nhập
         if (!isset($_SESSION['user_id'])) {
-            $_SESSION['redirect'] = BASE_URL . 'user/change-password';
+            $_SESSION['redirect'] = BASE_URL . 'change-password';
             $_SESSION['error'] = 'Vui lòng đăng nhập để đổi mật khẩu';
             header('Location: ' . BASE_URL . 'login');
             exit;
@@ -358,7 +392,7 @@ class UserController
                 
                 if ($result) {
                     $_SESSION['success'] = 'Đổi mật khẩu thành công';
-                    header('Location: ' . BASE_URL . 'user/profile');
+                    header('Location: ' . BASE_URL . 'profile');
                     exit;
                 } else {
                     $_SESSION['error'] = 'Có lỗi xảy ra khi đổi mật khẩu';

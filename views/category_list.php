@@ -31,16 +31,21 @@
             <?php foreach ($categories as $category): ?>
                 <div class="col">
                     <div class="card h-100 shadow-sm">
+                        <?php if (!empty($category['image'])): ?>
+                            <img src="<?= BASE_URL . $category['image'] ?>" class="card-img-top" alt="<?= $category['name'] ?>" style="height: 180px; object-fit: cover;">
+                        <?php else: ?>
+                            <img src="<?= BASE_URL ?>assets/images/category<?= ($category['id'] % 4) + 1 ?>.jpg.svg" class="card-img-top" alt="<?= $category['name'] ?>" style="height: 180px; object-fit: cover;">
+                        <?php endif; ?>
                         <div class="card-body">
                             <h5 class="card-title">
-                                <a href="<?= BASE_URL ?>category/detail/<?= $category['id'] ?>" class="text-decoration-none">
+                                <a href="<?= BASE_URL ?>categories/detail/<?= $category['id'] ?>" class="text-decoration-none">
                                     <?= $category['name'] ?>
                                 </a>
                             </h5>
                             <p class="card-text"><?= $category['description'] ?></p>
                         </div>
                         <div class="card-footer bg-transparent">
-                            <a href="<?= BASE_URL ?>category/detail/<?= $category['id'] ?>" class="btn btn-primary btn-sm">
+                            <a href="<?= BASE_URL ?>categories/detail/<?= $category['id'] ?>" class="btn btn-primary btn-sm">
                                 Xem sản phẩm
                             </a>
                         </div>

@@ -50,20 +50,24 @@
 </div>
 
 <script>
+    // Hiển thị thông tin session trong console khi trang đăng nhập được tải
+    console.log('Login page loaded');
+    console.log('Current session on login page:', <?= json_encode($_SESSION) ?>);
+    console.log('Is logged in on login page:', <?= is_logged_in() ? 'true' : 'false' ?>);
+    
     // Validate form
     (function() {
         'use strict';
         
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
         var forms = document.querySelectorAll('.needs-validation');
         
-        Array.prototype.slice.call(forms).forEach(function(form) {
-            form.addEventListener('submit', function(event) {
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
                 if (!form.checkValidity()) {
                     event.preventDefault();
                     event.stopPropagation();
-                } else {
-                    // Log khi form hợp lệ và sẽ được gửi
-                    console.log('Form đăng nhập hợp lệ, đang gửi dữ liệu...');
                 }
                 
                 form.classList.add('was-validated');
@@ -84,5 +88,21 @@
         if (errorAlert) {
             console.log('Thông báo lỗi: ' + errorAlert.textContent.trim());
         }
+        
+        <?php if (isset($_SESSION['console_log'])): ?>
+            // Hiển thị thông báo console với màu nổi bật và kích thước lớn hơn
+            console.log('%c THÔNG BÁO: <?= $_SESSION['console_log'] ?>', 'background: #4CAF50; color: white; font-size: 14px; padding: 5px; border-radius: 3px;');
+            // Hiển thị thông báo lặp lại 3 lần để đảm bảo người dùng không bỏ lỡ
+            setTimeout(function() {
+                console.log('%c THÔNG BÁO: <?= $_SESSION['console_log'] ?>', 'background: #4CAF50; color: white; font-size: 14px; padding: 5px; border-radius: 3px;');
+            }, 500);
+            setTimeout(function() {
+                console.log('%c THÔNG BÁO: <?= $_SESSION['console_log'] ?>', 'background: #4CAF50; color: white; font-size: 14px; padding: 5px; border-radius: 3px;');
+            }, 1000);
+            
+            // Hiển thị thông báo alert để đảm bảo người dùng không bỏ lỡ
+            alert('<?= $_SESSION['console_log'] ?>');
+            <?php unset($_SESSION['console_log']); ?>
+        <?php endif; ?>
     });
 </script>

@@ -2,7 +2,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?= BASE_URL ?>">Trang chủ</a></li>
-            <li class="breadcrumb-item"><a href="<?= BASE_URL ?>category/detail/<?= $product['category_id'] ?>"><?= $product['category_name'] ?></a></li>
+            <li class="breadcrumb-item"><a href="<?= BASE_URL ?>categories/detail/<?= $product['category_id'] ?>"><?= $product['category_name'] ?></a></li>
             <li class="breadcrumb-item active" aria-current="page"><?= $product['name'] ?></li>
         </ol>
     </nav>
@@ -38,10 +38,10 @@
                     
                     <div class="d-flex align-items-center mb-3">
                         <span class="me-3 fs-4 text-danger fw-bold">
-                            <?= number_format($product['price'] * (1 - $product['discount'] / 100), 0, ',', '.') ?> đ
+                            <?= number_format($product['price'] * (1 - (isset($product['discount']) ? $product['discount'] : 0) / 100), 0, ',', '.') ?> đ
                         </span>
                         
-                        <?php if ($product['discount'] > 0): ?>
+                        <?php if (isset($product['discount']) && $product['discount'] > 0): ?>
                             <span class="text-decoration-line-through text-muted me-2">
                                 <?= number_format($product['price'], 0, ',', '.') ?> đ
                             </span>
@@ -54,6 +54,7 @@
                             <?= $product['status'] ? 'Còn hàng' : 'Hết hàng' ?>
                         </span>
                         <span class="ms-2">Danh mục: <a href="<?= BASE_URL ?>category/detail/<?= $product['category_id'] ?>"><?= $product['category_name'] ?></a></span>
+                        <span class="ms-2">Số lượng: <?= $product['stock'] ?></span>
                     </div>
                     
                     <hr>
@@ -126,45 +127,7 @@
         </div>
     </div>
     
-    <!-- Sản phẩm liên quan -->
-    <?php if (!empty($relatedProducts)): ?>
-        <div class="row">
-            <div class="col-md-12">
-                <h3 class="mb-4">Sản phẩm liên quan</h3>
-                <div class="row row-cols-1 row-cols-md-4 g-4">
-                    <?php foreach ($relatedProducts as $relatedProduct): ?>
-                        <div class="col">
-                            <div class="card h-100 shadow-sm product-card">
-                                <img src="<?= $relatedProduct['image'] ? BASE_URL . 'uploads/' . $relatedProduct['image'] : 'https://via.placeholder.com/300x200' ?>" 
-                                     class="card-img-top" alt="<?= $relatedProduct['name'] ?>" style="height: 200px; object-fit: cover;">
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        <a href="<?= BASE_URL ?>product/detail/<?= $relatedProduct['id'] ?>" class="text-decoration-none">
-                                            <?= $relatedProduct['name'] ?>
-                                        </a>
-                                    </h5>
-                                    <p class="card-text text-truncate"><?= $relatedProduct['description'] ?></p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="text-danger fw-bold"><?= number_format($relatedProduct['price'], 0, ',', '.') ?> đ</span>
-                                        <?php if ($relatedProduct['discount'] > 0): ?>
-                                            <span class="badge bg-danger">-<?= $relatedProduct['discount'] ?>%</span>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                                <div class="card-footer bg-transparent">
-                                    <div class="d-grid">
-                                        <a href="<?= BASE_URL ?>product/detail/<?= $relatedProduct['id'] ?>" class="btn btn-primary btn-sm">
-                                            Xem chi tiết
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
+    <!-- Phần sản phẩm liên quan đã được xóa -->
 </div>
 
 <style>

@@ -30,7 +30,7 @@
                 </div>
                 <div class="card-footer">
                     <div class="d-grid gap-2">
-                        <a href="<?= BASE_URL ?>user/change-password" class="btn btn-outline-primary">Đổi mật khẩu</a>
+                        <a href="<?= BASE_URL ?>change-password" class="btn btn-outline-primary">Đổi mật khẩu</a>
                         <a href="<?= BASE_URL ?>logout" class="btn btn-outline-danger">Đăng xuất</a>
                     </div>
                 </div>

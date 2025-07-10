@@ -1,152 +1,55 @@
 <?php
 
-class ProductController
+class ProductAdminController
 {
     private $productModel;
     private $categoryModel;
-    private $commentModel;
     
     public function __construct()
     {
+        // Kiểm tra quyền admin
+        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+            $_SESSION['error'] = 'Bạn không có quyền truy cập trang quản trị';
+            header('Location: ' . BASE_URL);
+            exit;
+        }
+        
         $this->productModel = new ProductModel();
         $this->categoryModel = new CategoryModel();
-        $this->commentModel = new CommentModel();
     }
     
     /**
-     * Hiển thị danh sách tất cả sản phẩm
+     * Hiển thị danh sách sản phẩm
      */
     public function index()
     {
-        $products = $this->productModel->getAll();
-        $categories = $this->categoryModel->getAll();
+        // Ghi log để debug
+        error_log("ProductAdminController::index() được gọi");
         
-        $title = 'Sản phẩm - PolyShop';
-        $view = 'product_list';
+        $categoryId = isset($_GET['category']) ? (int)$_GET['category'] : null;
         
-        require_once PATH_VIEW . 'main.php';
-    }
-    
-    /**
-     * Hiển thị chi tiết sản phẩm
-     */
-    public function detail($id)
-    {
-        $product = $this->productModel->getById($id);
-        
-        if (!$product) {
-            $_SESSION['error'] = 'Không tìm thấy sản phẩm';
-            header('Location: ' . BASE_URL);
-            exit;
-        }
-        
-        // Lấy danh sách bình luận đã được phê duyệt
-        $comments = $this->commentModel->getByProduct($id, true);
-        
-        $title = $product['name'] . ' - PolyShop';
-        $view = 'product_detail';
-        
-        require_once PATH_VIEW . 'main.php';
-    }
-    
-    /**
-     * Hiển thị sản phẩm theo danh mục
-     */
-    public function category($categoryId)
-    {
-        // Chuyển hướng đến CategoryController
-        header('Location: ' . BASE_URL . 'category/detail/' . $categoryId);
-        exit;
-    }
-    
-    /**
-     * Tìm kiếm sản phẩm
-     */
-    public function search()
-    {
-        $keyword = $_GET['keyword'] ?? '';
-        
-        if (empty($keyword)) {
-            header('Location: ' . BASE_URL . 'product');
-            exit;
-        }
-        
-        $products = $this->productModel->search($keyword);
-        $categories = $this->categoryModel->getAll();
-        
-        $title = 'Kết quả tìm kiếm: ' . $keyword . ' - PolyShop';
-        $view = 'product_list';
-        $searchKeyword = $keyword;
-        
-        require_once PATH_VIEW . 'main.php';
-    }
-    
-    /**
-     * Thêm bình luận cho sản phẩm
-     */
-    public function addComment()
-    {
-        // Kiểm tra đăng nhập
-        if (!isset($_SESSION['user_id'])) {
-            $_SESSION['error'] = 'Vui lòng đăng nhập để bình luận';
-            header('Location: ' . BASE_URL . 'login');
-            exit;
-        }
-        
-        // Kiểm tra phương thức POST
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ' . BASE_URL);
-            exit;
-        }
-        
-        $productId = $_POST['product_id'] ?? 0;
-        $content = $_POST['content'] ?? '';
-        
-        // Validate dữ liệu
-        $errors = [];
-        
-        if (empty($productId)) {
-            $errors[] = 'Sản phẩm không hợp lệ';
-        }
-        
-        if (empty($content)) {
-            $errors[] = 'Nội dung bình luận không được để trống';
-        }
-        
-        if (empty($errors)) {
-            $data = [
-                'user_id' => $_SESSION['user_id'],
-                'product_id' => $productId,
-                'content' => $content,
-                'approved' => 0 // Chờ phê duyệt
-            ];
-            
-            $result = $this->commentModel->create($data);
-            
-            if ($result) {
-                $_SESSION['success'] = 'Bình luận của bạn đã được gửi và đang chờ phê duyệt';
-            } else {
-                $_SESSION['error'] = 'Có lỗi xảy ra khi gửi bình luận';
-            }
+        if ($categoryId) {
+            $products = $this->productModel->getByCategory($categoryId);
+            $category = $this->categoryModel->getById($categoryId);
+            $title = 'Sản phẩm trong danh mục "' . $category['name'] . '" - PolyShop';
         } else {
-            $_SESSION['error'] = implode('<br>', $errors);
+            $products = $this->productModel->getAllWithCategory();
+            $title = 'Quản lý sản phẩm - PolyShop';
         }
         
-        header('Location: ' . BASE_URL . 'product/detail/' . $productId);
-        exit;
+        $categories = $this->categoryModel->getAll();
+        $view = 'admin/products';
+        
+        require_once PATH_VIEW . 'admin.php';
     }
     
     /**
-     * Hiển thị form thêm sản phẩm (chỉ admin)
+     * Hiển thị form thêm sản phẩm
      */
     public function add()
     {
-        // Kiểm tra quyền admin
-        if (!is_admin()) {
-            $_SESSION['error'] = 'Bạn không có quyền thực hiện chức năng này';
-            header('Location: ' . BASE_URL . 'product');
-            exit;
-        }
+        // Ghi log để debug
+        error_log("ProductAdminController::add() được gọi");
         
         $categories = $this->categoryModel->getAll();
         
@@ -158,6 +61,9 @@ class ProductController
             $price = $_POST['price'] ?? 0;
             $categoryId = $_POST['category_id'] ?? 0;
             $stock = $_POST['stock'] ?? 0;
+            $status = isset($_POST['status']) ? (int)$_POST['status'] : 1;
+            $featured = isset($_POST['featured']) ? 1 : 0;
+            $discount = $_POST['discount'] ?? 0;
             
             // Xử lý upload ảnh
             $imageUrl = '';
@@ -167,7 +73,9 @@ class ProductController
                 $targetFile = $uploadDir . $fileName;
                 
                 if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
-                    $imageUrl = BASE_ASSETS_UPLOADS . $fileName;
+                    $imageUrl = $fileName; // Lưu tên file vào database
+                } else {
+                    $errors[] = 'Không thể upload hình ảnh. Vui lòng thử lại.';
                 }
             }
             
@@ -202,7 +110,10 @@ class ProductController
                     'price' => $price,
                     'image_url' => $imageUrl,
                     'category_id' => $categoryId,
-                    'stock' => $stock
+                    'stock' => $stock,
+                    'status' => $status,
+                    'featured' => $featured,
+                    'discount' => $discount
                 ];
                 
                 $result = $this->productModel->create($data);
@@ -221,7 +132,7 @@ class ProductController
         
         $title = 'Thêm sản phẩm - PolyShop';
         $view = 'admin/product_form';
-        $formAction = BASE_URL . 'product/add';
+        $formAction = BASE_URL . 'admin/product/add';
         $product = [
             'name' => '',
             'description' => '',
@@ -229,23 +140,22 @@ class ProductController
             'price' => '',
             'image_url' => '',
             'category_id' => '',
-            'stock' => ''
+            'stock' => '0',
+            'status' => '1',
+            'featured' => '0',
+            'discount' => '0'
         ];
         
         require_once PATH_VIEW . 'admin.php';
     }
     
     /**
-     * Hiển thị form cập nhật sản phẩm (chỉ admin)
+     * Hiển thị form cập nhật sản phẩm
      */
     public function edit($id)
     {
-        // Kiểm tra quyền admin
-        if (!is_admin()) {
-            $_SESSION['error'] = 'Bạn không có quyền thực hiện chức năng này';
-            header('Location: ' . BASE_URL . 'product');
-            exit;
-        }
+        // Ghi log để debug
+        error_log("ProductAdminController::edit() được gọi với id=$id");
         
         $product = $this->productModel->getById($id);
         
@@ -265,6 +175,9 @@ class ProductController
             $price = $_POST['price'] ?? 0;
             $categoryId = $_POST['category_id'] ?? 0;
             $stock = $_POST['stock'] ?? 0;
+            $status = isset($_POST['status']) ? (int)$_POST['status'] : 1;
+            $featured = isset($_POST['featured']) ? 1 : 0;
+            $discount = $_POST['discount'] ?? 0;
             
             // Xử lý upload ảnh
             $imageUrl = $product['image_url']; // Giữ nguyên ảnh cũ nếu không upload ảnh mới
@@ -274,8 +187,34 @@ class ProductController
                 $targetFile = $uploadDir . $fileName;
                 
                 if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
-                    $imageUrl = BASE_ASSETS_UPLOADS . $fileName;
+                    // Xóa ảnh cũ nếu có
+                    if (!empty($product['image_url'])) {
+                        $oldImagePath = $uploadDir . $product['image_url'];
+                        if (file_exists($oldImagePath)) {
+                            unlink($oldImagePath);
+                        }
+                    }
+                    $imageUrl = $fileName; // Lưu tên file vào database
+                } else {
+                    $errors[] = 'Không thể upload hình ảnh. Vui lòng thử lại.';
                 }
+            }
+            
+            // Xử lý xóa ảnh
+            if (isset($_POST['remove_image']) && $_POST['remove_image'] == 1) {
+                // Xóa file ảnh cũ nếu có
+                if (!empty($product['image_url'])) {
+                    $oldImagePath = PATH_ASSETS_UPLOADS . $product['image_url'];
+                    if (file_exists($oldImagePath)) {
+                        if (unlink($oldImagePath)) {
+                            // Xóa file thành công
+                        } else {
+                            // Ghi log nếu không xóa được file
+                            error_log("Không thể xóa file ảnh: " . $oldImagePath);
+                        }
+                    }
+                }
+                $imageUrl = '';
             }
             
             // Validate dữ liệu
@@ -305,7 +244,10 @@ class ProductController
                     'price' => $price,
                     'image_url' => $imageUrl,
                     'category_id' => $categoryId,
-                    'stock' => $stock
+                    'stock' => $stock,
+                    'status' => $status,
+                    'featured' => $featured,
+                    'discount' => $discount
                 ];
                 
                 $result = $this->productModel->update($id, $data);
@@ -324,22 +266,18 @@ class ProductController
         
         $title = 'Cập nhật sản phẩm - PolyShop';
         $view = 'admin/product_form';
-        $formAction = BASE_URL . 'product/edit/' . $id;
+        $formAction = BASE_URL . 'admin/product/edit/' . $id;
         
         require_once PATH_VIEW . 'admin.php';
     }
     
     /**
-     * Xóa sản phẩm (chỉ admin)
+     * Xóa sản phẩm
      */
     public function delete($id)
     {
-        // Kiểm tra quyền admin
-        if (!is_admin()) {
-            $_SESSION['error'] = 'Bạn không có quyền thực hiện chức năng này';
-            header('Location: ' . BASE_URL . 'product');
-            exit;
-        }
+        // Ghi log để debug
+        error_log("ProductAdminController::delete() được gọi với id=$id");
         
         $product = $this->productModel->getById($id);
         
@@ -352,6 +290,19 @@ class ProductController
         $result = $this->productModel->delete($id);
         
         if ($result) {
+            // Xóa file ảnh nếu có
+            if (!empty($product['image_url'])) {
+                $imagePath = PATH_ASSETS_UPLOADS . $product['image_url'];
+                if (file_exists($imagePath)) {
+                    if (unlink($imagePath)) {
+                        // Xóa file thành công
+                    } else {
+                        // Ghi log nếu không xóa được file
+                        error_log("Không thể xóa file ảnh: " . $imagePath);
+                    }
+                }
+            }
+            
             $_SESSION['success'] = 'Xóa sản phẩm thành công';
         } else {
             $_SESSION['error'] = 'Có lỗi xảy ra khi xóa sản phẩm';

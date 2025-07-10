@@ -318,22 +318,29 @@
     
     <!-- Custom JS -->
     <script>
-        // Hiển thị thông báo toast
+        // Hiển thị thông báo từ session nếu có
+        <?php if (isset($_SESSION['success'])): ?>
+            showToast('<?= $_SESSION['success'] ?>', 'success');
+            <?php unset($_SESSION['success']); ?>
+        <?php endif; ?>
+        
+        <?php if (isset($_SESSION['error'])): ?>
+            showToast('<?= $_SESSION['error'] ?>', 'danger');
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+        
+        // Hiển thị thông tin session trong console
+        console.log('Session info:', <?= json_encode($_SESSION) ?>);
+        console.log('Is logged in:', <?= is_logged_in() ? 'true' : 'false' ?>);
+        
+        // Hiển thị thông tin console_log nếu có
+        <?php if (isset($_SESSION['console_log'])): ?>
+            console.log('%c<?= $_SESSION['console_log'] ?>', 'background: #4e73df; color: white; padding: 2px 5px; border-radius: 3px;');
+            <?php unset($_SESSION['console_log']); ?>
+        <?php endif; ?>
+        
+        // Kích hoạt form validation của Bootstrap
         document.addEventListener('DOMContentLoaded', function() {
-            // Hiển thị thông báo thành công hoặc lỗi dưới dạng toast
-            <?php if (isset($_SESSION['success'])): ?>
-                console.log('Thành công: <?= addslashes($_SESSION['success']) ?>');
-                showToast('<?= addslashes($_SESSION['success']) ?>', 'success');
-                <?php unset($_SESSION['success']); ?>
-            <?php endif; ?>
-            
-            <?php if (isset($_SESSION['error'])): ?>
-                console.log('Lỗi: <?= addslashes($_SESSION['error']) ?>');
-                showToast('<?= addslashes($_SESSION['error']) ?>', 'danger');
-                <?php unset($_SESSION['error']); ?>
-            <?php endif; ?>
-            
-            // Kích hoạt form validation của Bootstrap
             var forms = document.querySelectorAll('.needs-validation');
             Array.prototype.slice.call(forms).forEach(function (form) {
                 form.addEventListener('submit', function (event) {
@@ -345,8 +352,6 @@
                 }, false);
             });
         });
-        
-        // Hàm hiển thị toast
         function showToast(message, type) {
             var toastHTML = `
                 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">

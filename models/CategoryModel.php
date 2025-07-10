@@ -33,34 +33,63 @@ class CategoryModel extends BaseModel
     // Thêm danh mục mới
     public function create($data)
     {
-        $sql = "INSERT INTO {$this->table} (name, description) VALUES (:name, :description)";
-        $stmt = $this->getPdo()->prepare($sql);
-        $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
-        $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
-        
-        return $stmt->execute();
+        try {
+            $sql = "INSERT INTO {$this->table} (name, description, image) VALUES (:name, :description, :image)";
+            $stmt = $this->getPdo()->prepare($sql);
+            $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
+            $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
+            $stmt->bindParam(':image', $data['image'], PDO::PARAM_STR);
+            
+            $result = $stmt->execute();
+            return $result;
+        } catch (PDOException $e) {
+            // Ghi log lỗi nếu cần
+            return false;
+        }
     }
 
     // Cập nhật danh mục
     public function update($id, $data)
     {
-        $sql = "UPDATE {$this->table} SET name = :name, description = :description WHERE id = :id";
-        $stmt = $this->getPdo()->prepare($sql);
-        $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
-        $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        
-        return $stmt->execute();
+        try {
+            // Kiểm tra xem có cập nhật hình ảnh không
+            if (isset($data['image'])) {
+                $sql = "UPDATE {$this->table} SET name = :name, description = :description, image = :image WHERE id = :id";
+                $stmt = $this->getPdo()->prepare($sql);
+                $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
+                $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
+                $stmt->bindParam(':image', $data['image'], PDO::PARAM_STR);
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            } else {
+                $sql = "UPDATE {$this->table} SET name = :name, description = :description WHERE id = :id";
+                $stmt = $this->getPdo()->prepare($sql);
+                $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
+                $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            }
+            
+            $result = $stmt->execute();
+            return $result;
+        } catch (PDOException $e) {
+            // Ghi log lỗi nếu cần
+            return false;
+        }
     }
 
     // Xóa danh mục
     public function delete($id)
     {
-        $sql = "DELETE FROM {$this->table} WHERE id = :id";
-        $stmt = $this->getPdo()->prepare($sql);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        
-        return $stmt->execute();
+        try {
+            $sql = "DELETE FROM {$this->table} WHERE id = :id";
+            $stmt = $this->getPdo()->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            
+            $result = $stmt->execute();
+            return $result;
+        } catch (PDOException $e) {
+            // Ghi log lỗi nếu cần
+            return false;
+        }
     }
     
     // Đếm tổng số danh mục

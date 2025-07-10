@@ -1,7 +1,7 @@
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0 text-gray-800">Quản lý danh mục</h1>
-        <a href="<?= BASE_URL ?>admin/category/add" class="btn btn-primary">
+        <a href="<?= BASE_URL ?>admin/categories/add" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Thêm danh mục mới
         </a>
     </div>
@@ -35,22 +35,37 @@
                         <thead>
                             <tr>
                                 <th width="5%">ID</th>
-                                <th width="20%">Tên danh mục</th>
-                                <th width="55%">Mô tả</th>
+                                <th width="10%">Hình ảnh</th>
+                                <th width="15%">Tên danh mục</th>
+                                <th width="45%">Mô tả</th>
                                 <th width="10%">Số sản phẩm</th>
-                                <th width="10%">Thao tác</th>
+                                <th width="15%">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($categories as $category): ?>
                                 <tr>
                                     <td><?= $category['id'] ?></td>
+                                    <td>
+                                        <?php if (!empty($category['image'])): ?>
+                                            <img src="<?= BASE_URL . $category['image'] ?>" alt="<?= $category['name'] ?>" class="img-thumbnail" style="max-width: 80px;">
+                                        <?php else: ?>
+                                            <img src="<?= BASE_URL ?>assets/images/category<?= ($category['id'] % 4) + 1 ?>.jpg.svg" alt="<?= $category['name'] ?>" class="img-thumbnail" style="max-width: 80px;">
+                                        <?php endif; ?>
+                                    </td>
                                     <td><?= $category['name'] ?></td>
                                     <td><?= $category['description'] ?></td>
-                                    <td class="text-center"><?= $category['product_count'] ?? 0 ?></td>
+                                    <td class="text-center">
+                                        <?= $category['product_count'] ?? 0 ?>
+                                        <?php if ($category['product_count'] > 0): ?>
+                                            <a href="<?= BASE_URL ?>admin/products?category=<?= $category['id'] ?>" class="ms-2 small">
+                                                <i class="bi bi-eye"></i> Xem
+                                            </a>
+                                        <?php endif; ?>
+                                    </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="<?= BASE_URL ?>admin/category/edit/<?= $category['id'] ?>" class="btn btn-sm btn-primary" title="Sửa">
+                                            <a href="<?= BASE_URL ?>admin/categories/edit?id=<?= $category['id'] ?>" class="btn btn-sm btn-primary" title="Sửa">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
                                             <button type="button" class="btn btn-sm btn-danger" title="Xóa" 
@@ -72,13 +87,17 @@
                                                         <?php if (isset($category['product_count']) && $category['product_count'] > 0): ?>
                                                             <div class="alert alert-warning mt-2">
                                                                 <i class="bi bi-exclamation-triangle"></i> Danh mục này đang có <?= $category['product_count'] ?> sản phẩm. 
-                                                                Nếu xóa, tất cả sản phẩm trong danh mục này sẽ không có danh mục.
+                                                                Không thể xóa danh mục có sản phẩm.
                                                             </div>
                                                         <?php endif; ?>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                        <a href="<?= BASE_URL ?>admin/category/delete/<?= $category['id'] ?>" class="btn btn-danger">Xóa</a>
+                                                        <?php if ($category['product_count'] == 0): ?>
+                                                            <a href="<?= BASE_URL ?>admin/categories/delete?id=<?= $category['id'] ?>" class="btn btn-danger">Xóa</a>
+                                                        <?php else: ?>
+                                                            <button type="button" class="btn btn-danger" disabled>Xóa</button>
+                                                        <?php endif; ?>
                                                     </div>
                                                 </div>
                                             </div>
@@ -95,11 +114,28 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        $('#dataTable').DataTable({
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.10.25/i18n/Vietnamese.json'
-            }
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof $ !== 'undefined') {
+            // Đảm bảo biến vietnameseLanguage đã được định nghĩa trước khi sử dụng
+            var checkDataTablesLanguage = setInterval(function() {
+                if (typeof vietnameseLanguage !== 'undefined') {
+                    clearInterval(checkDataTablesLanguage);
+                    $('#dataTable').DataTable({
+                        language: vietnameseLanguage
+                    });
+                }
+            }, 100);
+            
+            // Đặt thời gian chờ tối đa để tránh vòng lặp vô hạn
+            setTimeout(function() {
+                clearInterval(checkDataTablesLanguage);
+                if (typeof vietnameseLanguage === 'undefined') {
+                    console.error('Vietnamese language file not loaded. Using default language.');
+                    $('#dataTable').DataTable();
+                }
+            }, 3000);
+        } else {
+            console.error('jQuery is not loaded. DataTable initialization failed.');
+        }
     });
 </script>

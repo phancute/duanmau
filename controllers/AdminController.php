@@ -45,7 +45,7 @@ class AdminController
         $title = 'Trang quản trị - PolyShop';
         $view = 'admin/dashboard';
         
-        require_once PATH_VIEW . 'main.php';
+        require_once PATH_VIEW . 'admin.php';
     }
     
     /**
@@ -53,12 +53,147 @@ class AdminController
      */
     public function categories()
     {
+        // Lấy danh sách danh mục và đếm số sản phẩm trong mỗi danh mục
         $categories = $this->categoryModel->getAll();
+        
+        // Đếm số sản phẩm trong mỗi danh mục
+        foreach ($categories as &$category) {
+            $category['product_count'] = $this->productModel->countByCategory($category['id']);
+        }
         
         $title = 'Quản lý danh mục - PolyShop';
         $view = 'admin/categories';
         
-        require_once PATH_VIEW . 'main.php';
+        require_once PATH_VIEW . 'admin.php';
+    }
+    
+    /**
+     * Hiển thị form thêm danh mục
+     */
+    public function addCategory()
+    {
+        // Xử lý form submit
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = $_POST['name'] ?? '';
+            $description = $_POST['description'] ?? '';
+            
+            // Validate dữ liệu
+            $errors = [];
+            
+            if (empty($name)) {
+                $errors[] = 'Tên danh mục không được để trống';
+            }
+            
+            if (empty($errors)) {
+                $data = [
+                    'name' => $name,
+                    'description' => $description
+                ];
+                
+                $result = $this->categoryModel->create($data);
+                
+                if ($result) {
+                    $_SESSION['success'] = 'Thêm danh mục thành công';
+                    header('Location: ' . BASE_URL . 'admin/categories');
+                    exit;
+                } else {
+                    $_SESSION['error'] = 'Có lỗi xảy ra khi thêm danh mục';
+                }
+            } else {
+                $_SESSION['error'] = implode('<br>', $errors);
+            }
+        }
+        
+        $title = 'Thêm danh mục - PolyShop';
+        $view = 'admin/category_form';
+        $category = ['name' => '', 'description' => ''];
+        
+        require_once PATH_VIEW . 'admin.php';
+    }
+    
+    /**
+     * Hiển thị form cập nhật danh mục
+     */
+    public function editCategory($id)
+    {
+        $category = $this->categoryModel->getById($id);
+        
+        if (!$category) {
+            $_SESSION['error'] = 'Không tìm thấy danh mục';
+            header('Location: ' . BASE_URL . 'admin/categories');
+            exit;
+        }
+        
+        // Xử lý form submit
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = $_POST['name'] ?? '';
+            $description = $_POST['description'] ?? '';
+            
+            // Validate dữ liệu
+            $errors = [];
+            
+            if (empty($name)) {
+                $errors[] = 'Tên danh mục không được để trống';
+            }
+            
+            if (empty($errors)) {
+                $data = [
+                    'name' => $name,
+                    'description' => $description
+                ];
+                
+                $result = $this->categoryModel->update($id, $data);
+                
+                if ($result) {
+                    $_SESSION['success'] = 'Cập nhật danh mục thành công';
+                    header('Location: ' . BASE_URL . 'admin/categories');
+                    exit;
+                } else {
+                    $_SESSION['error'] = 'Có lỗi xảy ra khi cập nhật danh mục';
+                }
+            } else {
+                $_SESSION['error'] = implode('<br>', $errors);
+            }
+        }
+        
+        $title = 'Cập nhật danh mục - PolyShop';
+        $view = 'admin/category_form';
+        
+        require_once PATH_VIEW . 'admin.php';
+    }
+    
+    /**
+     * Xóa danh mục
+     */
+    public function deleteCategory($id)
+    {
+        $category = $this->categoryModel->getById($id);
+        
+        if (!$category) {
+            $_SESSION['error'] = 'Không tìm thấy danh mục';
+            header('Location: ' . BASE_URL . 'admin/categories');
+            exit;
+        }
+        
+        // Kiểm tra xem có sản phẩm nào thuộc danh mục này không
+        $productCount = $this->productModel->countByCategory($id);
+        
+        if ($productCount > 0) {
+            $_SESSION['error'] = 'Không thể xóa danh mục này vì có ' . $productCount . ' sản phẩm thuộc danh mục';
+            header('Location: ' . BASE_URL . 'admin/categories');
+            exit;
+        }
+        
+        $result = $this->categoryModel->delete($id);
+        
+        if ($result) {
+            $_SESSION['success'] = 'Xóa danh mục thành công';
+        } else {
+            $_SESSION['error'] = 'Có lỗi xảy ra khi xóa danh mục';
+        }
+        
+        header('Location: ' . BASE_URL . 'admin/categories');
+        exit;
     }
     
     /**
@@ -66,13 +201,21 @@ class AdminController
      */
     public function products()
     {
-        $products = $this->productModel->getAllWithCategory();
-        $categories = $this->categoryModel->getAll();
+        $categoryId = isset($_GET['category']) ? (int)$_GET['category'] : null;
         
-        $title = 'Quản lý sản phẩm - PolyShop';
+        if ($categoryId) {
+            $products = $this->productModel->getByCategory($categoryId);
+            $category = $this->categoryModel->getById($categoryId);
+            $title = 'Sản phẩm trong danh mục "' . $category['name'] . '" - PolyShop';
+        } else {
+            $products = $this->productModel->getAllWithCategory();
+            $title = 'Quản lý sản phẩm - PolyShop';
+        }
+        
+        $categories = $this->categoryModel->getAll();
         $view = 'admin/products';
         
-        require_once PATH_VIEW . 'main.php';
+        require_once PATH_VIEW . 'admin.php';
     }
     
     /**
@@ -85,7 +228,7 @@ class AdminController
         $title = 'Quản lý bình luận - PolyShop';
         $view = 'admin/comments';
         
-        require_once PATH_VIEW . 'main.php';
+        require_once PATH_VIEW . 'admin.php';
     }
     
     /**
@@ -132,7 +275,7 @@ class AdminController
         $title = 'Quản lý người dùng - PolyShop';
         $view = 'admin/users';
         
-        require_once PATH_VIEW . 'main.php';
+        require_once PATH_VIEW . 'admin.php';
     }
     
     /**
@@ -181,7 +324,7 @@ class AdminController
         $title = 'Báo cáo và thống kê - PolyShop';
         $view = 'admin/reports';
         
-        require_once PATH_VIEW . 'main.php';
+        require_once PATH_VIEW . 'admin.php';
     }
     
     /**
